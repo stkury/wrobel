@@ -1,0 +1,30 @@
+body
+{
+  background-image: url('../images/wrobel/back0.png');
+}
+
+#zim
+{
+  position: absolute;
+  top: 100px;
+  left: 100px;
+  right: 100px;
+  bottom: 100px;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 20px;
+  z-index:5;
+}
+
+#podkladka
+{
+  position: absolute;
+  top: 100px;
+  left: 100px;
+  right: 100px;
+  bottom: 100px;
+  border-radius: 10px;
+  padding: 20px;
+  background-color: blue;
+  opacity:0.1;
+}

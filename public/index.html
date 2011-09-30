@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta name="gwt:property" content="locale=pl_PL">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <title>WRÓBEL</title>
+
+
+    <link type="text/css" rel="stylesheet" href="css/Lite.css">
+    <link type="text/css" rel="stylesheet" href="css/Zimorodek.css">
+    <link type="text/css" rel="stylesheet" href="css/wrobel.css">
+    <link type="text/css" rel="stylesheet" href="scripts/jquery-ui-1.8.16.custom.css">
+
+    <script type="text/javascript" language="javascript" src="scripts/jquery.js"></script>
+    <script type="text/javascript" language="javascript" src="scripts/jquery.mousewheel-min.js"></script>
+    <script type="text/javascript" language="javascript" src="scripts/jquery-ui-1.8.16.custom.min.js"></script>
+    <!--<script type="text/javascript" language="javascript" src="terminal/jquery.terminal-0.3.6.min.js"></script>-->
+    <!--<script type="text/javascript" language="javascript" src="terminal/terminal.js"></script>-->
+
+    <script type="text/javascript" language="javascript" src="Lite/Lite.nocache.js"></script>
+
+    <script type="text/javascript">
+    function updateStylesheets()
+    {
+        var i,a,s;
+        a=document.getElementsByTagName('link');
+        for(i=0;i<a.length;i++)
+        {
+            s=a[i];
+            if(s.rel.toLowerCase().indexOf('stylesheet')>=0&&s.href)
+            {
+                var h=s.href.replace(/(&|\\?)forceReload=d /,'');
+                s.href=h+(h.indexOf('?')>=0?'&':'?')+'forceReload='+(new Date().getTime());
+            }
+        }
+    }
+    </script>    
+
+
+    <link rel="stylesheet" type="text/css" href="css/gxt-all.css"/>
+</head>
+
+<body style="position: absolute;top:0px;bottom: 0px;left:0px;right:0px;">
+  <div app="Oco:WRO:A" id="zim" debug="n"></div>
+  <div id="podkladka"></div>
+  <iframe id="__gwt_historyFrame" style="width:0;height:0;border:0"></iframe>
+</body>
+</html>
