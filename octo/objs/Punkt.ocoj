@@ -1,0 +1,58 @@
+module "WRO";
+
+transactional class Punkt extends TransObject
+{
+  address{ int id; };
+
+  noupdt int id;
+  noupdt int user_id;
+
+  int lokId;
+  txt nazwa;
+  txt opis;
+
+  Calculate
+  {
+    id := this.address.id;
+
+    declare r punkty %rowtype;
+    begin
+    select * into r from punkty where id = in:id;
+    out:user_id := r.userid;
+    out:nazwa := r.nazwa;
+    out:opis := r.opis;
+    out:lokId := r.lok_id;
+    end;
+  };
+
+  OnSave
+  {
+    update punkty
+    set
+    nazwa = in:nazwa,
+    opis = in:opis,
+    lok_id = in:lokId
+    where id = in:id;
+  };
+}
+
+
+non-transactional indexable class PunktyUsera extends IdxObject
+{
+  address{ int user_id; txt status; };
+
+  noupdt int user_id;
+
+  Calculate
+  {
+    user_id := this.address.user_id;
+
+    for r in ( select id
+               from punkty
+               where userid = in:user_id
+               order by nazwa )
+    {
+      add( ref( "Punkt", address( int(r.ID) ) ) );
+    }
+  };
+}

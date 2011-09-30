@@ -1,0 +1,53 @@
+module "WRO";
+
+transactional class Lokalizacja extends TransObject
+{
+  address{ int id; };
+
+  noupdt int id;
+
+  txt nazwa;
+  txt opis;
+
+  Calculate
+  {
+    id := this.address.id;
+
+    declare r lokalizacje %rowtype;
+    begin
+    select * into r from lokalizacje where id = in:id;
+    out:nazwa := r.nazwa;
+    out:opis  := r.opis;
+    end;
+  };
+
+  OnSave
+  {
+    update lokalizacje
+    set
+    nazwa = in:nazwa,
+    opis = in:opis,
+    where id = in:id;
+  };
+}
+
+
+non-transactional indexable class LokalizacjeUsera extends IdxObject
+{
+  address{ int user_id; txt status; };
+
+  noupdt int user_id;
+
+  Calculate
+  {
+    user_id := this.address.user_id;
+
+    for r in ( select id
+               from lokalizacje
+               where userid = in:user_id
+               order by nazwa )
+    {
+      add( ref( "Lokalizacja", address( int(r.ID) ) ) );
+    }
+  };
+}

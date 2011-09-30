@@ -3,6 +3,6 @@ module "WRO";
 application A
 {
   root_class = Root;
-  root_pres = LOGIN;
+  root_pres = ROOT;
   role = 'Wro:LOGIN';
 }

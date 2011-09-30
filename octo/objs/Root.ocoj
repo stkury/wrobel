@@ -24,7 +24,7 @@ non-transactional class Root extends Object
     throw msg( SHOWTEXT, "Calculate called" );
   };
 
-  method doLogin
+  method doLogin returns ref
   {
     int v_operId;
     roles rs := roles( 'LOGGEDIN', 'user-'+userLogin, txt(this.address.sess_id) );
@@ -41,13 +41,23 @@ non-transactional class Root extends Object
     sess->attachOuterUser( params );
 
     user := ref( 'User', address( v_operId ) );
+    return user;
+  };
+
+  noupdt method dajId returns int
+  {
+    int user_id := sess->user_id;
+    if( user_id.isnull() ) throw msg( ST, 'User nie zalogowany' );
+
+    int vid;
+    select objseq.nextval into out:vid from dual;
+
+    return vid;
   };
 
   method createUser( txt name, txt pass ) returns User
   {
-    int i;
-    select nvl(max(id),0)+1 into out:i from users;
-
+    int i := dajId();
     insert into users( id, username, haslo ) values ( in:i, in:name, in:pass );
 
     return ref( 'User', address( i ) );
@@ -55,13 +65,25 @@ non-transactional class Root extends Object
 
   method sendMsg( int touser, txt mess ) returns ref
   {
-    int s := sess->user_id;
-    int mid;
+    int i := dajId();
+    insert into messages(id,userid,sender,state,msg) values( in:i, in:touser, OE.sess.userid, 'N', in:mess );
 
-    select objseq.nextval into out:mid from dual;
+    return ref( "Message", address( i ) );
+  };
 
-    insert into messages(id,userid,sender,state,msg) values(in:mid,in:touser,in:s,'N',in:mess);
+  method utworzPunkt( txt nazwa := '' ) returns ref
+  {
+    int i := dajId();
+    insert into punkty(id,userid,nazwa) values( in:i, OE.sess.userid, in:nazwa );
 
-    return ref( "Message", address(mid) );
+    return ref( "Punkt", address( i ) );
+  };
+
+  method utworzLokalizajce( txt nazwa := '' ) returns ref
+  {
+    int i := dajId();
+    insert into lokalizacje(id,userid,nazwa) values( in:i, OE.sess.userid, in:nazwa );
+
+    return ref( "Lokalizacja", address( i ) );
   };
 }

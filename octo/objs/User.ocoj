@@ -9,7 +9,10 @@ transactional class User extends TransObject
   noupdt txt username;
   txt haslo;
 
-  ref messagesN;
+  noupdt ref messagesN;
+
+  noupdt ref punkty( PunktyUsera );
+  noupdt ref lokalizacje( LokalizacjeUsera );
 
   Calculate
   {
@@ -23,6 +26,9 @@ transactional class User extends TransObject
     end;
 
     messagesN := ref( 'Messages', address( id, 'N' ) );
+
+    punkty      := ref( 'PunktyUsera', address( id, 'N' ) );
+    lokalizacje := ref( 'LokalizacjeUsera', address( id, 'N' ) );
   };
 
 }
