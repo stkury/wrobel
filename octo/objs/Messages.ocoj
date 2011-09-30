@@ -1,0 +1,35 @@
+module "WRO";
+
+non-transactional indexable class Messages extends IdxObject
+{
+  address{ int user_id; txt state; };
+
+  Calculate
+  {
+    int user_id := this.address.user_id;
+
+    for r in ( select *
+               from messages where userid = in:user_id
+               order by sdate desc )
+    {
+      add( ref( "Message", address( int(r.ID) ) ) );
+    }
+  };
+}
+
+transactional class Message extends TransObject
+{
+  address{ int id; };
+
+  Calculate
+  {
+    int id := this.address.id;
+
+    
+    declare r messages %rowtype;
+    begin
+      select * into r from messages where id = in:id;
+    
+    end;
+  };
+}

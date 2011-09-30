@@ -1,0 +1,8 @@
+module "WRO";
+
+application A
+{
+  root_class = Root;
+  root_pres = LOGIN;
+  role = 'Wro:LOGIN';
+}

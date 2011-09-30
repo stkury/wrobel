@@ -1,0 +1,56 @@
+module "WRO";
+
+defaults
+{
+  New
+  {
+    kind = "BAKTERIA";
+    log_on = "(FAILED)";
+  }
+
+  Calculate
+  {
+    kind = "BAKTERIA_CALC";
+    log_on = "(FAILED)";
+  }
+
+  Initialize
+  {
+    kind = "BAKTERIA";
+    log_on = "(FAILED)";
+  }
+
+  method
+  {
+    kind = "BAKTERIA";
+    log_on = "(FAILED)";
+  }
+
+  PostPut
+  {
+    kind = "BAKTERIA";
+    log_on = "(FAILED)";
+  }
+
+  PreCommit
+  {
+    kind = "BAKTERIA";
+    log_on = "(FAILED)"; // nie logujemy udanego precommita
+  }
+
+  OnSave
+  {
+    kind = "BAKTERIA_SAVER";
+    log_on = "(DONE)(FAILED)"; // zawsze logujemy save
+  }
+
+  loadlob
+  {
+    kind = "BAKTERIA_BINREADER";
+  }
+
+  savelob
+  {
+    kind = "BAKTERIA_BINWRITER";
+  }
+}

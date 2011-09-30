@@ -1,0 +1,28 @@
+module "WRO";
+
+
+transactional class User extends TransObject
+{
+  address{ int id; };
+
+  noupdt int id;
+  noupdt txt username;
+  txt haslo;
+
+  ref messagesN;
+
+  Calculate
+  {
+    id := this.address.id;
+    
+    declare r users %rowtype;
+    begin
+      select * into r from users where id = in:id;
+    out:username := r.username;
+    out:haslo := r.haslo;
+    end;
+
+    messagesN := ref( 'Messages', address( id, 'N' ) );
+  };
+
+}

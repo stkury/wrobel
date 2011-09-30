@@ -1,0 +1,15 @@
+module "WRO";
+
+group message G1
+{
+  message RO
+  {
+    English := @{}@;
+    Polish  := @{}@;
+  };
+  message ST
+  {
+    English := @{$1$}@;
+    Polish  := @{$1$}@;
+  };
+}

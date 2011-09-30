@@ -1,0 +1,67 @@
+module "WRO";
+
+metaclass Root
+{
+  New
+  {
+    return address( sess->id );
+  };
+}
+
+non-transactional class Root extends Object
+{
+  address{ int sess_id; };
+
+  txt userLogin { label = "Login"; };
+  txt password;
+  txt newPassword;
+  txt newPasswordRepeat;
+
+  noupdt ref user( User );
+
+  Calculate
+  {
+    throw msg( SHOWTEXT, "Calculate called" );
+  };
+
+  method doLogin
+  {
+    int v_operId;
+    roles rs := roles( 'LOGGEDIN', 'user-'+userLogin, txt(this.address.sess_id) );
+
+    select max(id) into out:v_operId from users where username = in:userLogin and haslo = in:password;
+
+    if( v_operId.isnull() )
+      throw msg( ST, 'Niepoprawny login lub has³o' );
+
+    parameters params;
+    params.add( v_operId );
+    params.add( userLogin );
+    params.add( rs );
+    sess->attachOuterUser( params );
+
+    user := ref( 'User', address( v_operId ) );
+  };
+
+  method createUser( txt name, txt pass ) returns User
+  {
+    int i;
+    select nvl(max(id),0)+1 into out:i from users;
+
+    insert into users( id, username, haslo ) values ( in:i, in:name, in:pass );
+
+    return ref( 'User', address( i ) );
+  };
+
+  method sendMsg( int touser, txt mess ) returns ref
+  {
+    int s := sess->user_id;
+    int mid;
+
+    select objseq.nextval into out:mid from dual;
+
+    insert into messages(id,userid,sender,state,msg) values(in:mid,in:touser,in:s,'N',in:mess);
+
+    return ref( "Message", address(mid) );
+  };
+}

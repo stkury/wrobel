@@ -1,0 +1,51 @@
+module "WRO";
+
+non-transactional class Object
+{
+}
+
+transactional class TransObject
+{
+}
+
+non-transactional indexable class IdxObject
+{
+}
+
+transactional indexable class TransIdxObject
+{
+}
+
+
+
+rights for Object
+{
+  default
+  {
+    :DEFAULT = W;
+  };
+}
+
+rights for TransObject
+{
+  default
+  {
+    :DEFAULT = W;
+  };
+}
+
+rights for IdxObject
+{
+  default
+  {
+    :DEFAULT = W;
+  };
+}
+
+rights for TransIdxObject
+{
+  default
+  {
+    :DEFAULT = W;
+  };
+}
