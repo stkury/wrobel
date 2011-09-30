@@ -1,8 +1,0 @@
-create table messages(
-  id     number,
-  uid    number,
-  sender number,
-  state  varchar2(1),
-  sdate  date,
-  msg    varchar2(4000)
-);
