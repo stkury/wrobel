@@ -3,15 +3,134 @@ module "WRO";
 presentation USER_BOARD basedon User
 {
   layout = "order";
-  alignment = center;
-
-  in label{value="ZALOGOWANY";}; 
-
-  in button { buttonlabel = "dupa"; };
+  spacing = 5;
+  
+  this in box with presentation
+  {
+    layout = order;
+    
+    in label { value = "Ex<'Zalogowany:&nbsp' + username>"; };
+  };
+  
+  this in box UserMainBox with presentation USER_MAIN
+  {
+    stretch = 1;
+  };
 
 }
 
+
+presentation USER_MAIN basedon User
+{
+  layout = "tab";
+  tabposition = bottom;
+
+  this in box with presentation Empty
+  {
+    label = "Ulubione";
+  };
+
+  this in box with presentation Empty
+  {
+    label = "Wyszukiwanie";
+  };
+
+  this in box with presentation USER_POINTS
+  {
+    label = "Moje";
+  };
+
+  this in box with presentation Empty
+  {
+    label = "Wiadomo¶ci";
+  };
+
+  this in box with presentation USER_SETTINGS
+  {
+    label = "Ustawienia";
+  };
+
+
+}
+
+
+presentation USER_SETTINGS basedon User
+{
+  layout = "order";
+  spacing = 5;
+  alignment = top_left;
+
+  in label { value = "Zmiana has³a"; };
+  
+  this in box with presentation
+  {
+    layout = "order";
+    
+    flat = N;
+    spacing = 5;    
+
+    in text { label = "aktualne has³o"; };
+    in text { label = "nowe has³o"; };
+    in text { label = "powtórz nowe has³o"; };
+    in button { buttonlabel = "Zmieñ has³o"; };
+  }; 
+
+}
+
+
+presentation USER_POINTS basedon User
+{
+  layout = splitter;
+  
+  this in box with presentation 
+  {
+    layout = order;
+
+    punkty in box with presentation
+    {	
+      layout = tree;
+
+      * in button      
+      {
+	buttonlabel = "Ex<this[@index@]->nazwa>";
+      };
+    }
+    {
+      stretch = 1;
+    };
+
+    in button { buttonlabel = "Dodaj punkt"; horizontal_stretch = 1; };
+  }
+  {
+    stretch = 1;
+  };
+
+  this in box with presentation Empty
+  {
+    stretch = 10;
+  };
+
+}
+
+
+
 rights for presentation USER_BOARD basedon User
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation USER_MAIN basedon User
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation USER_SETTINGS basedon User
+{
+  default{ :DEFAULT = W; };
+}
+
+
+rights for presentation USER_POINTS basedon User
 {
   default{ :DEFAULT = W; };
 }

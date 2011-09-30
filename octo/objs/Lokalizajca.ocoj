@@ -5,6 +5,7 @@ transactional class Lokalizacja extends TransObject
   address{ int id; };
 
   noupdt int id;
+  noupdt ref user;
 
   txt nazwa;
   txt opis;
@@ -13,12 +14,16 @@ transactional class Lokalizacja extends TransObject
   {
     id := this.address.id;
 
+    int v_user;
     declare r lokalizacje %rowtype;
     begin
     select * into r from lokalizacje where id = in:id;
-    out:nazwa := r.nazwa;
-    out:opis  := r.opis;
+    out:v_user := r.userid;
+    out:nazwa  := r.nazwa;
+    out:opis   := r.opis;
     end;
+
+    user := ref( 'User', address( v_user ) );
   };
 
   OnSave
@@ -32,15 +37,11 @@ transactional class Lokalizacja extends TransObject
 }
 
 
-non-transactional indexable class LokalizacjeUsera extends IdxObject
+non-transactional indexable class LokalizacjeUsera extends ObiektyUsera
 {
-  address{ int user_id; txt status; };
-
-  noupdt int user_id;
-
   Calculate
   {
-    user_id := this.address.user_id;
+    super;
 
     for r in ( select id
                from lokalizacje

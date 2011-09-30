@@ -1,0 +1,27 @@
+module "WRO";
+
+globals
+{
+  noupdt txt dzienTyg;
+  noupdt txt dzienTygNN;
+
+  noupdt txt miesiac;
+  noupdt txt miesiacNN;
+
+  Calculate
+  {
+    dzienTyg.vlist   := vallist( ('',''), ('1','poniedzia³ek'), ('2','wtorek'), ('3','¶roda'), ('4','czwartek'), ('5','pi±tek'), ('6','sobota'), ('7','niedziela') );
+    dzienTygNN.vlist := vallist(          ('1','poniedzia³ek'), ('2','wtorek'), ('3','¶roda'), ('4','czwartek'), ('5','pi±tek'), ('6','sobota'), ('7','niedziela') );
+
+    miesiac.vlist   := vallist( ('',''), ('01','01 - Styczeñ'), ('02','02 - Luty'), ('03','03 - Marzec'), ('04','04 - Kwiecieñ'), ('05','05 - Maj'), ('06','06 - Czerwiec'), ('07','07 - Lipiec'), ('08','08 - Sierpieñ'), ('09','09 - Wrzesieñ'), ('10','10 - Pa¼dziernik'), ('11','11 - Listopad'), ('12','12 - Grudzieñ') );
+    miesiacNN.vlist := vallist(          ('01','01 - Styczeñ'), ('02','02 - Luty'), ('03','03 - Marzec'), ('04','04 - Kwiecieñ'), ('05','05 - Maj'), ('06','06 - Czerwiec'), ('07','07 - Lipiec'), ('08','08 - Sierpieñ'), ('09','09 - Wrzesieñ'), ('10','10 - Pa¼dziernik'), ('11','11 - Listopad'), ('12','12 - Grudzieñ') );
+  };
+}
+
+rights for globals
+{
+  default
+  {
+    :DEFAULT = R;
+  };
+}

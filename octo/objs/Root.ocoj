@@ -44,10 +44,13 @@ non-transactional class Root extends Object
     return user;
   };
 
-  noupdt method dajId returns int
+  noupdt method dajId( bool check_user := true ) returns int
   {
-    int user_id := sess->user_id;
-    if( user_id.isnull() ) throw msg( ST, 'User nie zalogowany' );
+    if( check_user )
+    {
+      int user_id := sess->user_id;
+      if( user_id.isnull() ) throw msg( ST, 'User nie zalogowany' );
+    }
 
     int vid;
     select objseq.nextval into out:vid from dual;
@@ -57,8 +60,12 @@ non-transactional class Root extends Object
 
   method createUser( txt name, txt pass ) returns User
   {
-    int i := dajId();
+    int i := dajId( false );
     insert into users( id, username, haslo ) values ( in:i, in:name, in:pass );
+
+    userLogin := name;
+    password := pass;
+    doLogin();
 
     return ref( 'User', address( i ) );
   };
@@ -85,5 +92,15 @@ non-transactional class Root extends Object
     insert into lokalizacje(id,userid,nazwa) values( in:i, OE.sess.userid, in:nazwa );
 
     return ref( "Lokalizacja", address( i ) );
+  };
+
+  method utworzAtrakcje( txt nazwa := '' ) returns ref
+  {
+    int i := dajId();
+    insert into atrakcje(id,userid,nazwa) values( in:i, OE.sess.userid, in:nazwa );
+
+    recalculate( ref( 'AtrakcjeUsera', address( sess->user_id, '' ) ) );
+
+    return ref( "Atrakcja", address( i ) );
   };
 }

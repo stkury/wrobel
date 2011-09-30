@@ -1,0 +1,59 @@
+module "WRO";
+
+transactional class Atrakcja extends TransObject
+{
+  address{ int id; };
+
+  noupdt int id;
+  noupdt ref user;
+  noupdt ref rj( RozkladJazdy );
+  noupdt ref terminarze( TerminarzeAtrakcji );
+
+  txt nazwa;
+  txt opis;
+
+  Calculate
+  {
+    id := this.address.id;
+
+    terminarze := ref( 'TerminarzeAtrakcji', address( id ) );
+
+    int v_user;
+    declare r atrakcje %rowtype;
+    begin
+    select * into r from atrakcje where id = in:id;
+    out:v_user := r.userid;
+    out:nazwa := r.nazwa;
+    out:opis := r.opis;
+    end;
+
+    user := ref( 'User', address( v_user ) );
+    rj   := ref( 'RozkladJazdy', this.address );
+  };
+
+  OnSave
+  {
+    update atrakcje
+    set
+    nazwa = in:nazwa,
+    opis = in:opis
+    where id = in:id;
+  };
+}
+
+
+non-transactional indexable class AtrakcjeUsera extends ObiektyUsera
+{
+  Calculate
+  {
+    super;
+
+    for r in ( select id
+               from atrakcje
+               where userid = in:user_id
+               order by nazwa )
+    {
+      add( ref( "Atrakcja", address( int(r.ID) ) ) );
+    }
+  };
+}

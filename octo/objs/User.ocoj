@@ -13,6 +13,7 @@ transactional class User extends TransObject
 
   noupdt ref punkty( PunktyUsera );
   noupdt ref lokalizacje( LokalizacjeUsera );
+  noupdt ref atrakcje( AtrakcjeUsera );
 
   Calculate
   {
@@ -29,6 +30,23 @@ transactional class User extends TransObject
 
     punkty      := ref( 'PunktyUsera', address( id, 'N' ) );
     lokalizacje := ref( 'LokalizacjeUsera', address( id, 'N' ) );
+    atrakcje    := ref( 'AtrakcjeUsera', address( id, 'N' ) );
   };
 
+}
+
+
+non-transactional indexable class ObiektyUsera extends IdxObject
+{
+  address{ int user_id; txt status; };
+
+  noupdt int user_id;
+  noupdt ref user;
+
+  Calculate
+  {
+    user_id := this.address.user_id;
+
+    user := ref( 'User', address( user_id ) );
+  };
 }

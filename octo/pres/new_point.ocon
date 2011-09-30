@@ -1,0 +1,14 @@
+module "WRO";
+
+presentation NEW_POINT basedon User
+{
+  layout = "order";
+  alignment = center;
+
+  in label{value="zdefiniuj nowy punkt";}; 
+}
+
+rights for presentation NEW_POINT basedon User
+{
+  default{ :DEFAULT = W; };
+}

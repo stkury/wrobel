@@ -1,0 +1,192 @@
+module "WRO";
+
+transactional indexable class RozkladJazdy of RozkladJazdyElem extends TransIdxObject
+{
+  address{ int atr_id; };
+
+  noupdt int atr_id;
+  noupdt ref user;
+  noupdt ref atrakcja( Atrakcja );
+
+  Calculate
+  {
+    atr_id := this.address.atr_id;
+
+    atrakcja := ref( 'Atrakcja', address( atr_id ) );
+    user := atrakcja->user;
+
+    for r in ( select rj.id, decode(rodzaj,'D','Dniowy','T','Tygodniowy','M','Miesieczny','') podklasa
+               from rozklady_jazdy rj
+               where atr_id = in:atr_id
+               order by seq )
+    {
+      add( ref( 'RozkladJazdyElem'+r.podklasa, address( int(r.ID) ) ) );
+    }
+  };
+
+  method dodaj( txt rodzaj, time godz_od, time godz_do ) returns RozkladJazdyElem
+  {
+    ref root := sess->root;
+    int i := root->dajId();
+    int s;
+
+    select nvl(max(seq),0)+1 into out:s from rozklady_jazdy where atr_id = atr_id;
+
+    insert into rozklady_jazdy(id,userid,atr_id,seq,rodzaj,godz_od,godz_do) values( in:i, OE.sess.userid, in:atr_id, in:s, in:rodzaj, in:godz_od, in:godz_do );
+
+    txt klasa;
+
+    if(      rodzaj = 'D' ) klasa := 'Dniowy';
+    else if( rodzaj = 'T' ) klasa := 'Tygodniowy';
+    else if( rodzaj = 'M' ) klasa := 'Miesieczny';
+
+    return ref( 'RozkladJazdyElem'+klasa, address(i) );
+  };
+
+  method generujTerminarz( time godz_od ) returns Terminarz
+  {
+    txt v_err;
+    int v_id;
+    begin out:v_err := p_term.genTerm( in:atr_id, in:godz_od, out:v_id );
+    end;
+
+    if( !v_err.isnull() ) throw msg( ST, v_err );
+
+    recalculate( atrakcja->terminarze );
+
+    return ref( 'Terminarz', address( v_id ) );
+  };
+}
+
+
+transactional class RozkladJazdyElem extends TransObject
+{
+  address{ int id; };
+
+  noupdt int id;
+  noupdt ref user;
+  noupdt ref rj( RozkladJazdy );
+
+  bool active;
+  time godzOd;
+  time godzDo;
+  txt dzienCoIle;
+  txt tydzCoIle;
+  txt mcW;
+  txt mcJednostka;
+  txt mcCoIle;
+
+  noupdt txt t_dni; // rozkladane na atrybyty dni w podklasie
+
+  Calculate
+  {
+    id := this.address.id;
+
+    int v_atr;
+    declare r rozklady_jazdy %rowtype;
+    begin
+    select * into r from rozklady_jazdy where id = in:id;
+    out:v_atr       := r.atr_id;
+    out:godzOd      := r.godz_od;
+    out:godzDo      := r.godz_do;
+    out:dzienCoIle  := r.d_co_ile;
+    out:t_dni       := r.t_dni;
+    out:tydzCoIle   := r.t_co_ile;
+    out:mcW         := r.m_w;
+    out:mcJednostka := r.m_j;
+    out:mcCoIle     := r.m_co_ile;
+    end;
+
+    rj := ref( "RozkladJazdy", address( v_atr ) );
+    user := rj->user;
+  };
+
+  OnSave
+  {
+    update rozklady_jazdy set
+    godz_od   = in:godzOd,
+    godz_do   = in:godzDo,
+    d_co_ile  = in:dzienCoIle,
+    t_dni     = in:t_dni,
+    t_co_ile  = in:tydzCoIle,
+    m_w       = in:mcW,
+    m_j       = in:mcJednostka,
+    m_co_ile  = in:mcCoIle
+    where id = in:id;
+  };
+
+  method usun
+  {
+    delete rozklady_jazdy where id = in:id;
+    recalculate( rj );
+  };
+}
+
+transactional class RozkladJazdyElemDniowy extends RozkladJazdyElem
+{
+  Calculate
+  {
+    super;
+
+    tydzCoIle  .rmsg := msg(RO);
+    mcW        .rmsg := msg(RO);
+    mcJednostka.rmsg := msg(RO);
+    mcCoIle    .rmsg := msg(RO);
+  };
+}
+
+
+transactional class RozkladJazdyElemTygodniowy extends RozkladJazdyElem
+{
+  bool dtPon;
+  bool dtWt;
+  bool dtSr;
+  bool dtCzw;
+  bool dtPia;
+  bool dtSob;
+  bool dtNdz;
+
+  Calculate
+  {
+    super;
+
+    dtPon := t_dni.find('1') != EOS;
+    dtWt  := t_dni.find('2') != EOS;
+    dtSr  := t_dni.find('3') != EOS;
+    dtCzw := t_dni.find('4') != EOS;
+    dtPia := t_dni.find('5') != EOS;
+    dtSob := t_dni.find('6') != EOS;
+    dtNdz := t_dni.find('7') != EOS;
+
+    dzienCoIle .rmsg := msg(RO);
+    mcW        .rmsg := msg(RO);
+    mcJednostka.rmsg := msg(RO);
+    mcCoIle    .rmsg := msg(RO);
+  };
+
+  OnSave
+  {
+    t_dni := '';
+    if( dtPon ) t_dni += '1';
+    if( dtWt )  t_dni += '2';
+    if( dtSr )  t_dni += '3';
+    if( dtCzw ) t_dni += '4';
+    if( dtPia ) t_dni += '5';
+    if( dtSob ) t_dni += '6';
+    if( dtNdz ) t_dni += '7';
+
+    super;
+  };
+}
+
+
+transactional class RozkladJazdyElemMiesieczny extends RozkladJazdyElem
+{
+  Calculate
+  {
+    super;
+
+    dzienCoIle .rmsg := msg(RO);
+    tydzCoIle  .rmsg := msg(RO);
+  };
+}

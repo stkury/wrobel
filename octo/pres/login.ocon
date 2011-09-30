@@ -15,6 +15,7 @@ presentation LOGIN basedon Root
     userLogin in text;
     password in text
     {
+      maskvalue = Y;
       label = "Has³o";
     };
 
@@ -23,7 +24,9 @@ presentation LOGIN basedon Root
       buttonlabel = "Zaloguj";
 
       on click throw 	
-	( name=LOGGED_IN; );	
+	( name=LOGGED_IN; );
+      on error throw ( name = Pokaz_Blad; );
+
     };
 
     in button 

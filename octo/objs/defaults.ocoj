@@ -40,7 +40,7 @@ defaults
 
   OnSave
   {
-    kind = "BAKTERIA_SAVER";
+    kind = "BAKTERIA";
     log_on = "(DONE)(FAILED)"; // zawsze logujemy save
   }
 

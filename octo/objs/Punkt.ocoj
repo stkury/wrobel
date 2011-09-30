@@ -5,7 +5,8 @@ transactional class Punkt extends TransObject
   address{ int id; };
 
   noupdt int id;
-  noupdt int user_id;
+  noupdt ref user;
+  noupdt ref lokalizacja( Lokalizacja );
 
   int lokId;
   txt nazwa;
@@ -15,14 +16,18 @@ transactional class Punkt extends TransObject
   {
     id := this.address.id;
 
+    int v_user;
     declare r punkty %rowtype;
     begin
     select * into r from punkty where id = in:id;
-    out:user_id := r.userid;
-    out:nazwa := r.nazwa;
-    out:opis := r.opis;
-    out:lokId := r.lok_id;
+    out:v_user := r.userid;
+    out:nazwa  := r.nazwa;
+    out:opis   := r.opis;
+    out:lokId  := r.lok_id;
     end;
+
+    user := ref( 'User', address( v_user ) );
+    lokalizacja := lokId.isnull() ? ref() : ref( 'Lokalizacja', address( lokId ) );
   };
 
   OnSave
@@ -37,15 +42,11 @@ transactional class Punkt extends TransObject
 }
 
 
-non-transactional indexable class PunktyUsera extends IdxObject
+non-transactional indexable class PunktyUsera extends ObiektyUsera
 {
-  address{ int user_id; txt status; };
-
-  noupdt int user_id;
-
   Calculate
   {
-    user_id := this.address.user_id;
+    super;
 
     for r in ( select id
                from punkty

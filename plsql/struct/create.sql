@@ -5,3 +5,7 @@
 
 @ USERS.sql
 @ MESSAGES.sql
+@ LOKALIZACJE.sql
+@ ATRAKCJE.sql
+@ ROZKLADY_JAZDY.sql
+@ TERMINARZE.sql
