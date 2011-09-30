@@ -23,7 +23,9 @@ presentation LOGIN basedon Root
       buttonlabel = "Zaloguj";
 
       on click throw 	
-	( name=LOGGED_IN; );	
+	( name=LOGGED_IN; );
+      on error throw ( name = Pokaz_Blad; );
+
     };
 
     in button 

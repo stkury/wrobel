@@ -4,13 +4,11 @@ presentation ROOT basedon Root
 {
   layout = "order";
   renderer = "window";
-  quitonclose = "Y";
-
-  in label{value="tu na razie jest co¶tam co¶tam...";};
+  quitonclose = "Y";  
   
   this in box MainBox with presentation LOGIN
-  {
-    
+  {	
+    stretch = 1;    
   };
 
   //this in box with presentation SIGNUP;
@@ -22,6 +20,26 @@ presentation ROOT basedon Root
   catch( name=CREATE_USER; ) to MainBox { event( value = "Ex<this>"; type=show; presentation=SIGNUP; ); };
 
   catch( name=TO_MAIN_BOX; ) to MainBox;
+
+  as WyzwalaczBledu in empty WYZWALACZ_BLEDU
+  {
+    type = TXT;
+    on click throw
+      ( newwindow=Y; windowtype=modal; value="Ex<this>"; presentation=WWW_BLAD; parameters="Ex<'( message='+&WyzwalaczBledu+'; )'>"; label = "B£¡D!"; );
+  };
+
+  catch ( name = Pokaz_Blad; ) to WYZWALACZ_BLEDU
+  {
+    priority = 10;
+    event ( type = setvalue; );
+    forward ();
+  };
+
+  catch ( name = Pokaz_Blad; ) to WYZWALACZ_BLEDU
+  {
+    priority = 20;
+    event ( type = action; );
+  };
 
 }
 
