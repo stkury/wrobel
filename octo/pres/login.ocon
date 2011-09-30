@@ -1,0 +1,42 @@
+module "WRO";
+
+presentation LOGIN basedon Root
+{
+  layout = "order";
+
+  this in box with presentation
+  {
+    layout = "order";
+    alignment = center;
+
+    
+    in label { value = "Zaloguj siê... "; };
+
+    userLogin in text;
+    password in text
+    {
+      label = "Has³o";
+    };
+
+    doLogin in button 
+    {
+      buttonlabel = "Zaloguj";
+
+      on click throw 	
+	( name=LOGGED_IN; );	
+    };
+
+    in button 
+    {
+      buttonlabel = "...lub stwórz konto";
+      on click throw ( name=CREATE_USER; );
+    };
+  };
+
+
+}
+
+rights for presentation LOGIN basedon Root
+{
+  default{ :DEFAULT = W; };
+}
