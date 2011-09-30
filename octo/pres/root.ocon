@@ -25,7 +25,7 @@ presentation ROOT basedon Root
   {
     type = TXT;
     on click throw
-      ( newwindow=Y; windowtype=modal; value="Ex<this>"; presentation=WWW_BLAD; parameters="Ex<'( message='+&WyzwalaczBledu+'; )'>"; label = "B£¡D!"; );
+      ( newwindow=Y; windowtype=modal; value="Ex<this>"; presentation=WWW_BLAD; parameters="Ex<'( message='+   replace( replace(&WyzwalaczBledu,'Oco:WRO:_Message#ST|default: (',''),')','' )   +'; )'>"; label = "B£¡D!"; );
   };
 
   catch ( name = Pokaz_Blad; ) to WYZWALACZ_BLEDU
