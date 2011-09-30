@@ -1,0 +1,25 @@
+module "WRO";
+
+presentation WWW_BLAD basedon Root
+{
+  layout = order;
+  scrollable = N;
+  alignment = center;
+  margin = 0;
+
+  in label at 0 { value="@message@"; font="bold=Y;"; textalign=center; min_width=120px; };
+  in button NO at 1
+  {
+    stretch = 1;
+    
+    buttonlabel = "OK";
+    on click throw
+      ( type=hide; destination=@this; );
+  };
+
+}
+
+rights for presentation WWW_BLAD basedon Root
+{
+  default{ :DEFAULT = W; };
+}
