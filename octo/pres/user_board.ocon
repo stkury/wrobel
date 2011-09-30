@@ -1,0 +1,17 @@
+module "WRO";
+
+presentation USER_BOARD basedon User
+{
+  layout = "order";
+  alignment = center;
+
+  in label{value="ZALOGOWANY";}; 
+
+  in button { buttonlabel = "dupa"; };
+
+}
+
+rights for presentation USER_BOARD basedon User
+{
+  default{ :DEFAULT = W; };
+}

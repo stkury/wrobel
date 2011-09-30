@@ -1,0 +1,31 @@
+module "WRO";
+
+presentation ROOT basedon Root
+{
+  layout = "order";
+  renderer = "window";
+  quitonclose = "Y";
+
+  in label{value="tu na razie jest co¶tam co¶tam...";};
+  
+  this in box MainBox with presentation LOGIN
+  {
+    
+  };
+
+  //this in box with presentation SIGNUP;
+  //this in box with presentation USER_BOARD;
+  
+  
+  catch( name=LOGGED_IN; ) to MainBox { event( value = "Ex<user>"; type=show;  presentation=USER_BOARD; ); };
+
+  catch( name=CREATE_USER; ) to MainBox { event( value = "Ex<this>"; type=show; presentation=SIGNUP; ); };
+
+  catch( name=TO_MAIN_BOX; ) to MainBox;
+
+}
+
+rights for presentation ROOT basedon Root
+{
+  default{ :DEFAULT = W; };
+}

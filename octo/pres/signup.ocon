@@ -1,0 +1,26 @@
+module "WRO";
+
+presentation SIGNUP basedon Root
+{
+  layout = "order";
+  alignment = center;
+
+  in label{value="REJESTRACJA";};
+  
+  as USERNAME in text USERNAME { type = TXT; label = "login"; value = ""; };
+  as PASSWORD in text PASSWORD { type = TXT; label = "has³o"; value = ""; };
+  in text PASSWORD_SECOND { label = "Powtórz has³o"; value = ""; };
+
+  in button 
+  {
+    buttonlabel = "Stwórz u¿ytkownika";
+
+    on click throw 
+      ( value = "Ex<createUser(&USERNAME,&PASSWORD)>"; type = show; presentation = USER_BOARD; name = TO_MAIN_BOX; );
+  };
+}
+
+rights for presentation SIGNUP basedon Root
+{
+  default{ :DEFAULT = W; };
+}
