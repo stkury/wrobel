@@ -1,0 +1,53 @@
+module "WRO";
+
+presentation USER_MESSAGES_PANEL basedon User
+{
+  layout = "order";
+  in label{value="LISTA WIADOMO¦CI";};
+
+  this in box MessagePanel with presentation 
+  {
+    layout = order;
+
+  }
+  {
+    stretch = 1;
+  };
+
+    this in button 
+    { 
+        buttonlabel = "Wy¶lij wiadomo¶æ"; 
+        on click throw
+	      ( newwindow=Y; windowtype=modal; value="Ex<@root>"; presentation=WWW_BLAD; parameters="Ex<'( message=NADAL PRACUJEMY NAD T¡ FUNKCJONALNO¦CI¡; )'>"; label = "WRÓÆ PÓ¬NIEJ"; );
+              
+    };
+
+//  catch( name=TO_TAB_PANEL; ) to TabPanel;
+}
+
+presentation MESSAGES_LIST_ELEMENT basedon Message
+{
+  layout="order";
+  in label{value="Ex<this>";};
+}
+
+presentation NEW_MESSAGE basedon User
+{
+}
+
+
+
+rights for presentation USER_MESSAGES_PANEL basedon User
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation MESSAGES_LIST_ELEMENT basedon Message
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation NEW_MESSAGE basedon User
+{
+  default{ :DEFAULT = W; };
+}
