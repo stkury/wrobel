@@ -8,6 +8,8 @@ transactional class Terminarz extends TransObject
   noupdt ref user;
   noupdt ref rj( RozkladJazdyElem );
 
+  noupdt int rjId;
+  noupdt txt dzienTyg;
   time godzOd;
   time godzDo;
 
@@ -18,18 +20,20 @@ transactional class Terminarz extends TransObject
     int v_user, v_rj; txt v_rj_podklasa;
     declare r terminarze %rowtype;
     begin
-    select * into r
-    from terminarze where id = in:id;
-    select decode(rodzaj,'D','Dniowy','T','Tygodniowy','M','Miesieczny','') into out:v_rj_podklasa
-    from rozklady_jazdy where id = r.rj_id;
-    out:v_user := r.userid;
-    out:v_rj   := r.rj_id;
-    out:godzOd := r.godz_od;
-    out:godzDo := r.godz_do;
+      select * into r
+      from terminarze where id = in:id;
+      select decode(rodzaj,'D','Dniowy','T','Tygodniowy','M','Miesieczny','') into out:v_rj_podklasa
+      from rozklady_jazdy where id = r.rj_id;
+      out:v_user := r.userid;
+      out:v_rj   := r.rj_id;
+      out:godzOd := r.godz_od;
+      out:godzDo := r.godz_do;
+      out:dzienTyg := to_char(r.godz_od,'Day');
     end;
 
     rj := ref( 'RozkladJazdyElem'+v_rj_podklasa, address( v_rj ) );
     user := rj->user;
+    rjId := v_rj;
   };
 }
 

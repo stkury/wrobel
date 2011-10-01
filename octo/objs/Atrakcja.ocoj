@@ -9,6 +9,9 @@ transactional class Atrakcja extends TransObject
   noupdt ref rj( RozkladJazdy );
   noupdt ref terminarze( TerminarzeAtrakcji );
 
+  int pktId;
+  noupdt ref punkt( Punkt );
+
   txt nazwa;
   txt opis;
 
@@ -25,10 +28,12 @@ transactional class Atrakcja extends TransObject
     out:v_user := r.userid;
     out:nazwa := r.nazwa;
     out:opis := r.opis;
+    out:pktId := r.pkt_id;
     end;
 
     user := ref( 'User', address( v_user ) );
     rj   := ref( 'RozkladJazdy', this.address );
+    punkt := pktId.isnull() ? ref() : ref( 'Punkt', address( pktId ) );
   };
 
   OnSave
@@ -36,7 +41,8 @@ transactional class Atrakcja extends TransObject
     update atrakcje
     set
     nazwa = in:nazwa,
-    opis = in:opis
+    opis = in:opis,
+    pkt_id = pktId
     where id = in:id;
   };
 }

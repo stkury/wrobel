@@ -2,15 +2,138 @@ module "WRO";
 
 presentation POINT_DETAILS basedon Punkt
 {
-  layout = "order";
-  alignment = center;
+  layout = "tab";
+  orientation = h;
 
-  in label{value="PUNKT";}; 
+  
+  this in box with presentation POINT_DESC
+  {
+    label = "opis";
+  };
 
-  nazwa in text NAME { type = TXT; label = "nazwa";};
+  lokalizacja in box with presentation POINT_LOCALIZATION
+  {
+    label = "lokalizacja";
+  };
+
+  this in box with presentation Empty
+  {
+    label = "atrakcje";
+  };
+
 }
 
+
+presentation POINT_DESC basedon Punkt
+{
+  layout = "order";
+
+  nazwa in text NAME { type = TXT; label = "nazwa"; width = 400; };
+  opis in textarea { label = "opis"; width = 400; };
+  
+  
+}
+
+
+
+presentation POINT_IMAGE basedon Punkt
+{
+  layout = "order";
+  
+
+  zdjecieUrl in FileUpload
+  {
+    heading = "Wybierz obrazek";
+    horizontal_stretch = 1;
+  };
+ 
+  this in box with presentation 
+  {
+    layout = order;
+    
+    in image
+    {
+      url = "Ex<zdjecieUrl>";
+      width = 100;
+      height = 100;
+    };
+  }
+  {
+    stretch = 1;
+  };   
+  
+}
+
+
+presentation POINT_LOCALIZATION basedon Lokalizacja
+{
+  layout = order;
+  orientation = h;
+  flat = N;
+  
+
+  this in box with presentation 
+  {
+    layout = order;
+    alignment = top_left;
+
+    in label { value = "Lokalizacja"; };
+
+    kraj in text { label = kraj; };
+    region in text { label = region; };
+    miasto in text { label = miasto; };
+    ulica in text { label = ulica; };
+    numer_domu in text { label = numer; };
+    in button 
+    { 
+      buttonlabel = "Wyszukaj na mapie"; 
+      on click throw 
+	( value = "Ex<sklej()>";);
+
+    };
+  }
+  {
+    stretch = 1;
+  };
+
+  this in box with presentation 
+  {
+    layout = map;
+
+    as LOCALIZATION in text LOCALIZATION 
+    { 
+      type = TXT; label = "login"; value = "Ex<adres_sklejony>"; adres="Ex<adres_sklejony>";
+      on returnpressed throw
+	( newwindow=Y; windowtype=modal; value="Ex<@root>"; presentation=WWW_BLAD; parameters="Ex<'( message='+&LOCALIZATION+'; )'>"; label = "BU"; );
+    };
+  }
+  {
+    stretch = 1;
+  };
+  
+
+  
+  
+}
+
+
+
 rights for presentation POINT_DETAILS basedon Punkt
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation POINT_DESC basedon Punkt
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation POINT_IMAGE basedon Punkt
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation POINT_LOCALIZATION basedon Lokalizacja
 {
   default{ :DEFAULT = W; };
 }

@@ -29,6 +29,7 @@ transactional class User extends TransObject
     punkty      := ref( 'PunktyUsera', address( id, 'N' ) );
     lokalizacje := ref( 'LokalizacjeUsera', address( id, 'N' ) );
     atrakcje    := ref( 'AtrakcjeUsera', address( id, 'N' ) );
+    recalculate(punkty);
   };
 
 }

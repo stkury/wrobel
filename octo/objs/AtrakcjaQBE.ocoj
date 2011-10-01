@@ -1,0 +1,57 @@
+module "WRO";
+
+non-transactional class AtrakcjeQBE extends Object
+{
+  address { int sess_id; int seq; };
+
+  txt atr_userid;
+  txt atr_nazwa;
+  txt atr_typ;
+
+  txt pkt_userid;
+  txt pkt_nazwa;
+
+  method serach returns AtrakcjeQBESET
+  {
+    ref r := ref( 'AtrakcjeQBESET', this.address );
+    recalculate( r );
+    return ref( 'AtrakcjeQBESET', this.address );
+  };
+}
+
+non-transactional indexable class AtrakcjeQBESET extends IdxObject
+{
+  address { int sess_id; int seq; };
+
+  Calculate
+  {
+    @<
+      begin
+        O.use( O.orl( 'AtrakcjeQBE', OE.self.addr ) );
+      end;
+    >@
+    @<
+      declare
+        vQbe OT.orl := O.orl( 'AtrakcjeQBE', OE.self.addr );
+        vt_ID dbms_sql.Number_Table;
+      begin
+        qry.Pre_Open;
+        qry.Pre_Begin_Base( vQbe );
+        qry.Pre_Add( 'atr_userid',    'INT', 'atr.userid' );
+        qry.Pre_Add( 'atr_nazwa',     'TXT', 'atr.nazwa' );
+        qry.Pre_Add( 'atr_typ',       'INT', 'atr.typ_id' );
+        qry.Pre_End_Base;
+
+        qry.Pre_Begin_Join( 'atrakcje atr', vQbe );
+        qry.Pre_Add( 'pkt_userid', 'INT', 'pkt.userid' );
+        qry.Pre_Add( 'pkt_nazwa',  'TXT', 'pkt.nazwa' );
+        qry.Pre_End_Join( 'atr.PKT_ID', 'pkt.ID' );
+
+        qry.Execute( vt_ID, 'atrakcje pkt', 'pkt.ID' );
+        for i in 1..vt_ID.count loop
+          O.setelem( O.orl( 'Atrakcja', vt_ID(i) ) );
+        end loop;
+      end;
+    >@
+  };
+}

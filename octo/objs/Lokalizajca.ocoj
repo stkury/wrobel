@@ -16,6 +16,14 @@ transactional class Lokalizacja extends TransObject
   txt ulica;
   txt numer_domu;
 
+  txt adres_sklejony;
+
+  method sklej()
+  {
+    adres_sklejony := kraj;
+  };
+
+
   Calculate
   {
     id := this.address.id;

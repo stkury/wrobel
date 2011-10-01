@@ -19,10 +19,12 @@ non-transactional class Root extends Object
 
   noupdt ref user( User );
   noupdt ref punktyQBE( PunktyQBE );
+  noupdt ref atrakcjeQBE( AtrakcjeQBE );
 
   Initialize
   {
     punktyQBE := ref( 'PunktyQBE', address( sess->id, dajId( false ) ) );
+    atrakcjeQBE := ref( 'AtrakcjeQBE', address( sess->id, dajId( false ) ) );
   };
 
   Calculate

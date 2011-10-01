@@ -40,14 +40,16 @@ transactional indexable class RozkladJazdy of RozkladJazdyElem extends TransIdxO
     else if( rodzaj = 'T' ) klasa := 'Tygodniowy';
     else if( rodzaj = 'M' ) klasa := 'Miesieczny';
 
+    this->recalculate();
+
     return ref( 'RozkladJazdyElem'+klasa, address(i) );
   };
 
-  method generujTerminarz( time godz_od ) returns Terminarz
+  method generujTerminarz( int ile := '1' ) returns Terminarz
   {
     txt v_err;
     int v_id;
-    begin out:v_err := p_term.genTerm( in:atr_id, in:godz_od, out:v_id );
+    begin out:v_err := p_term.genTerm( in:atr_id, in:ile, out:v_id );
     end;
 
     if( !v_err.isnull() ) throw msg( ST, v_err );

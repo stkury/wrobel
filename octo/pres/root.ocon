@@ -6,7 +6,7 @@ presentation ROOT basedon Root
   renderer = "window";
   quitonclose = "Y";  
   
-  this in box MainBox with presentation LOGIN
+  this in box MainBox with presentation SEARCH_OR_LOGIN
   {	
     stretch = 1;    
   };
@@ -43,7 +43,30 @@ presentation ROOT basedon Root
 
 }
 
+
+presentation SEARCH_OR_LOGIN basedon Root
+{
+  layout = order;
+  orientation = h;
+
+  punktyQBE in box with presentation POINT_SEARCH
+  {
+    stretch = 5;
+  };
+
+  this in box with presentation LOGIN
+  {
+    stretch = 1;
+  };
+}
+
+
 rights for presentation ROOT basedon Root
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation SEARCH_OR_LOGIN basedon Root
 {
   default{ :DEFAULT = W; };
 }
