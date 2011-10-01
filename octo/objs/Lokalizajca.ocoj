@@ -9,6 +9,12 @@ transactional class Lokalizacja extends TransObject
 
   txt nazwa;
   txt opis;
+  txt kraj;
+  txt region;
+  txt miasto;
+  txt dzielnica;
+  txt ulica;
+  txt numer_domu;
 
   Calculate
   {
@@ -32,6 +38,12 @@ transactional class Lokalizacja extends TransObject
     set
     nazwa = in:nazwa,
     opis = in:opis,
+    kraj = in:kraj,
+    region = in:region,
+    miasto = in:miasto,
+    dzielnica = in:dzielnica,
+    ulica = in:ulica,
+    numer_domu = in:numer_domu,
     where id = in:id;
   };
 }

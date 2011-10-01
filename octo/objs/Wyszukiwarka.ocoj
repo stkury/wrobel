@@ -1,0 +1,10 @@
+module "WRO";
+
+non-transactional class Wyszukiwarka extends TransObject
+{
+}
+
+
+non-transactional indexable class PunktyWyszukiwarki
+{
+}

@@ -1,3 +1,6 @@
+
+create sequence objseq;
+
 @ object.sql
 @ users.sql
 @ messages.sql

@@ -18,6 +18,12 @@ non-transactional class Root extends Object
   txt newPasswordRepeat;
 
   noupdt ref user( User );
+  noupdt ref punktyQBE( PunktyQBE );
+
+  Initialize
+  {
+    punktyQBE := ref( 'PunktyQBE', address( sess->id, dajId( false ) ) );
+  };
 
   Calculate
   {
@@ -78,12 +84,21 @@ non-transactional class Root extends Object
     return ref( "Message", address( i ) );
   };
 
-  method utworzPunkt( txt nazwa := '' ) returns ref
+  method utworzPunkt( txt nazwa := '', int lok_id := '' ) returns ref
   {
-    int i := dajId();
-    insert into punkty(id,userid,nazwa) values( in:i, OE.sess.userid, in:nazwa );
+    int v_lok_id := lok_id;
+    if( lok_id.isnull() )
+    {
+      ref lok := utworzLokalizajce( nazwa );
+      v_lok_id := lok->id;
+    }
 
-    return ref( "Punkt", address( i ) );
+    int pi := dajId();
+    insert into punkty(id,userid,nazwa,lok_id) values( in:pi, OE.sess.userid, in:nazwa, in:v_lok_id );
+
+    recalculate( user->punkty );
+
+    return ref( "Punkt", address( pi ) );
   };
 
   method utworzLokalizajce( txt nazwa := '' ) returns ref
@@ -91,16 +106,23 @@ non-transactional class Root extends Object
     int i := dajId();
     insert into lokalizacje(id,userid,nazwa) values( in:i, OE.sess.userid, in:nazwa );
 
+    recalculate( user->lokalizacje );
+
     return ref( "Lokalizacja", address( i ) );
   };
 
-  method utworzAtrakcje( txt nazwa := '' ) returns ref
+  method utworzAtrakcje( txt nazwa := '', int pkt_id := '' ) returns ref
   {
     int i := dajId();
-    insert into atrakcje(id,userid,nazwa) values( in:i, OE.sess.userid, in:nazwa );
+    insert into atrakcje(id,userid,nazwa,pkt_id) values( in:i, OE.sess.userid, in:nazwa, in:pkt_id );
 
-    recalculate( ref( 'AtrakcjeUsera', address( sess->user_id, '' ) ) );
+    recalculate( user->atrakcje );
 
     return ref( "Atrakcja", address( i ) );
+  };
+
+  method getPunktyQBE returns PunktyQBE
+  {
+    return ref( 'PunktyQBE', address( sess->id, dajId() ) );
   };
 }

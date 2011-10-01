@@ -3,6 +3,12 @@ create table lokalizacje(
   userid   number not null constraint lok_usr_fk references users,
   nazwa    varchar2(50),
   opis     varchar(4000)
+  KRAJ                    VARCHAR2(4000),  
+  REGION                  VARCHAR2(4000),  
+  MIASTO                  VARCHAR2(4000),  
+  DZIELNICA               VARCHAR2(4000),  
+  ULICA                   VARCHAR2(4000),  
+  NUMER_DOMU              VARCHAR2(4000)  
 );
 
 create table punkty(
@@ -20,6 +26,7 @@ create table atrakcje(
   userid   number not null constraint atr_usr_fk references users,
   typ_id   number,
   obj_id   number,
+  pkt_id   number,
   nazwa    varchar2(50),
   opis     varchar(4000)
 );

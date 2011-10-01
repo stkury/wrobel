@@ -11,6 +11,7 @@ transactional class Punkt extends TransObject
   int lokId;
   txt nazwa;
   txt opis;
+  txt zdjecieUrl;
 
   Calculate
   {
@@ -38,6 +39,12 @@ transactional class Punkt extends TransObject
     opis = in:opis,
     lok_id = in:lokId
     where id = in:id;
+  };
+
+  method utworzAtrakcje( txt nazwa := '' ) returns ref
+  {
+    ref root := sess->root;
+    return root->utworzAtrakcje( nazwa, id );
   };
 }
 

@@ -7,7 +7,6 @@ transactional class User extends TransObject
 
   noupdt int id;
   noupdt txt username;
-  txt haslo;
 
   noupdt ref messagesN;
 
@@ -23,7 +22,6 @@ transactional class User extends TransObject
     begin
       select * into r from users where id = in:id;
     out:username := r.username;
-    out:haslo := r.haslo;
     end;
 
     messagesN := ref( 'Messages', address( id, 'N' ) );

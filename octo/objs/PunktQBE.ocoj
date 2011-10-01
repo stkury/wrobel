@@ -1,0 +1,77 @@
+module "WRO";
+
+non-transactional class PunktyQBE extends Object
+{
+  address { int sess_id; int seq; };
+
+  txt pkt_userid;
+  txt pkt_nazwa;
+
+  txt lok_userid;
+  txt lok_nazwa;
+  txt lok_opis; 
+  txt lok_kraj; 
+  txt lok_miasto;
+  txt lok_dzielnica;
+  txt lok_ulica;
+  txt lok_nrDomu;
+
+  txt atr_userid;
+  txt atr_nazwa;
+  txt atr_typ;
+
+  method serach returns PunktyQBESET
+  {
+    ref r := ref( 'PunktyQBESET', this.address );
+    recalculate( r );
+    return ref( 'PunktyQBESET', this.address );
+  };
+}
+
+non-transactional indexable class PunktyQBESET extends IdxObject
+{
+  address { int sess_id; int seq; };
+
+  Calculate
+  {
+    @<
+      begin
+        O.use( O.orl( 'PunktyQBE', OE.self.addr ) );
+      end;
+    >@
+    @<
+      declare
+        vQbe OT.orl := O.orl( 'PunktyQBE', OE.self.addr );
+        vt_ID dbms_sql.Number_Table;
+      begin
+        qry.Pre_Open;
+        qry.Pre_Begin_Base( vQbe );
+        qry.Pre_Add( 'pkt_userid', 'INT', 'pkt.userid' );
+        qry.Pre_Add( 'pkt_nazwa',  'TXT', 'pkt.nazwa' );
+        qry.Pre_End_Base;
+
+        qry.Pre_Begin_Join( 'lokalizacje lok', vQbe );
+        qry.Pre_Add( 'lok_userid',    'INT', 'lok.userid' );
+        qry.Pre_Add( 'lok_nazwa',     'TXT', 'lok.nazwa' );
+        qry.Pre_Add( 'lok_opis',      'TXT', 'lok.opis' );
+        qry.Pre_Add( 'lok_kraj',      'TXT', 'lok.kraj' );
+        qry.Pre_Add( 'lok_miasto',    'TXT', 'lok.miasto' );
+        qry.Pre_Add( 'lok_dzielnica', 'TXT', 'lok.dzielnica' );
+        qry.Pre_Add( 'lok_ulica',     'TXT', 'lok.ulica' );
+        qry.Pre_Add( 'lok_nrDomu',    'TXT', 'lok.numer_domu' );
+        qry.Pre_End_Join( 'pkt.LOK_ID', 'lok.ID' );
+
+        qry.Pre_Begin_Join( 'atrakcje atr', vQbe );
+        qry.Pre_Add( 'atr_userid',    'INT', 'atr.userid' );
+        qry.Pre_Add( 'atr_nazwa',     'TXT', 'atr.nazwa' );
+        qry.Pre_Add( 'atr_typ',       'INT', 'atr.typ_id' );
+        qry.Pre_End_Join( 'atr.PKT_ID', 'pkt.ID' );
+
+        qry.Execute( vt_ID, 'punkty pkt', 'pkt.ID' );
+        for i in 1..vt_ID.count loop
+          O.setelem( O.orl( 'Punkt', vt_ID(i) ) );
+        end loop;
+      end;
+    >@
+  };
+}
