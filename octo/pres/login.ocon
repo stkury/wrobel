@@ -12,6 +12,13 @@ presentation LOGIN basedon Root
     
     in label { value = "Zaloguj siê... "; };
 
+    tmp in text
+    {
+      type = TIME;
+      format="dd-MM-yyyy HH:mm:ss";
+      label = "Do godziny:";
+    };
+
     userLogin in text;
     password in text
     {
@@ -42,22 +49,21 @@ presentation LOGIN basedon Root
 
 presentation USER_INFO basedon User
 {
-  layout = order;  
-    
+  layout = order;
+
   this in box with presentation
   {
-    layout = "order";
-    alignment = top_center;
-  
-    in label { value = "Ex<'Zalogowany:&nbsp' + username>"; };
+    layout = order;
+    alignment = center;
 
-    @root->doLogout in button 
+    in label { value = "Ex<'Zalogowany:&nbsp'+username>"; };
+    @root->doLogout in button
     {
       buttonlabel = "Wyloguj";
       
       on click throw
-	( name = "LOGGED_OUT"; );
-    };  
+	( name = LOGGED_OUT; );
+    };
   }
   {
     stretch = 1;
@@ -75,6 +81,7 @@ presentation USER_INFO basedon User
   {
     stretch = 4;
   };
+    
 }
 
 rights for presentation LOGIN basedon Root

@@ -16,6 +16,7 @@ non-transactional class Root extends Object
   txt password;
   txt newPassword;
   txt newPasswordRepeat;
+  time tmp;
 
   noupdt ref user( User );
   noupdt ref punktyQBE( PunktyQBE );

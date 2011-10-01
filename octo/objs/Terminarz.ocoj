@@ -7,6 +7,7 @@ transactional class Terminarz extends TransObject
   noupdt int id;
   noupdt ref user;
   noupdt ref rj( RozkladJazdyElem );
+  noupdt ref listaObecnosci( ListaObecnosci );
 
   noupdt int rjId;
   noupdt txt dzienTyg;
@@ -16,6 +17,8 @@ transactional class Terminarz extends TransObject
   Calculate
   {
     id := this.address.id;
+
+    listaObecnosci := ref( 'ListaObecnosci', this.address );
 
     int v_user, v_rj; txt v_rj_podklasa;
     declare r terminarze %rowtype;

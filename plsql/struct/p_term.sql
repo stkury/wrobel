@@ -10,6 +10,7 @@ is
   v_rj_id number;
   v date;
   x number;
+  day_name  varchar2(15);
 begin
   for r in ( select 1 from rozklady_jazdy where atr_id = p_atr_id and rownum = 1 )
   loop
@@ -85,19 +86,38 @@ begin
             end if;
           end;
         when 'M' then
+          bkt$utils.trc( 'adding '||(rj.m_co_ile)||' months to '||v );
+          v := trunc( add_months( v, rj.m_co_ile ), 'MONTH' ); -- poczatek odpowiedniego miesiaca
           if rj.m_j = 0 then -- co ktorys dzien miesiaca
-            bkt$utils.trc( 'adding '||(rj.m_co_ile)||' months to '||v );
-            v := trunc( add_months( v, rj.m_co_ile ), 'MONTH' ); -- poczatek odpowiedniego miesiaca
             if rj.m_w = 0 then
-              v := add_months( v, 1 ) - 1; -- ostatni dzien miesiaca
+              v := last_day( v ); -- ostatni dzien miesiaca
             elsif rj.m_w > 0 then
               v := v + (rj.m_w-1); -- dzien miesiaca
             else
-              v := add_months( v, 1 ) + (rj.m_w-1); -- dzien miesiaca od konca
+              v := last_day( v ) + rj.m_w; -- dzien miesiaca od konca
             end if;
-            bkt$utils.trc( v );
-            v := v + (rj.godz_od-trunc(rj.godz_od));
+          else -- co ktory dzien tygodnia w miesiacu
+            day_name := case rj.m_j
+              when 1 then 'Poniedzia³ek'
+              when 2 then 'Wtorek'
+              when 3 then '¦roda'
+              when 4 then 'Czwartek'
+              when 5 then 'Pi±tek'
+              when 6 then 'Sobota'
+              when 7 then 'Niedziela'
+            end;
+            if rj.m_w > 0 then
+              v := v-1;
+              bkt$utils.trc( ' before next_day '||v );
+              for i in 1..rj.m_w loop
+                v := next_day( v, day_name );
+              end loop;
+            else
+              raise_application_error( -20001, 'w miesiacu dzien tygodnia od konca - TODO' );
+            end if;
           end if;
+          bkt$utils.trc( v );
+          v := v + (rj.godz_od-trunc(rj.godz_od));
       end case;
     end loop;
 
@@ -114,6 +134,10 @@ begin
 
   insert into terminarze(id,userid,atr_id,rj_id,godz_od,godz_do) values( objseq.nextval, OE.sess.userid, p_atr_id, v_rj_id, v_godz_od, v_godz_do )
   return id into p_id;
+
+  insert into lista_obecnosci( id, term_id, ucz_id, status )
+  select objseq.nextval, p_id, id, 'B'
+    from uczestnicy where atr_id = p_atr_id;
 
   return '';
 end;

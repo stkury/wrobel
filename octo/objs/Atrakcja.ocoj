@@ -8,6 +8,7 @@ transactional class Atrakcja extends TransObject
   noupdt ref user;
   noupdt ref rj( RozkladJazdy );
   noupdt ref terminarze( TerminarzeAtrakcji );
+  noupdt ref uczestnicy( Uczestnicy );
 
   int pktId;
   noupdt ref punkt( Punkt );
@@ -20,6 +21,7 @@ transactional class Atrakcja extends TransObject
     id := this.address.id;
 
     terminarze := ref( 'TerminarzeAtrakcji', address( id ) );
+    uczestnicy := ref( 'Uczestnicy', this.address );
 
     int v_user;
     declare r atrakcje %rowtype;
@@ -44,6 +46,42 @@ transactional class Atrakcja extends TransObject
     opis = in:opis,
     pkt_id = pktId
     where id = in:id;
+  };
+
+  method dodajMnieDoUczestnikow returns Uczestnicy
+  {
+    ref root := sess->root;
+    int i := root->dajId();
+    int user_id := sess->user_id;
+
+    for r in ( uczestnicy )
+      if( r->user->id = user_id ) throw msg( ST, "U¿ytkownik ju¿ jest na li¶cie uczestników!" );
+
+    insert into uczestnicy(id,atr_id,userid) values( in:i, in:id, OE.sess.userid );
+
+    recalculate( uczestnicy );
+
+    return uczestnicy;
+  };
+
+  method usunMnieZUczestnikow returns Uczestnicy
+  {
+    int user_id := sess->user_id;
+    if( user_id.isnull() ) throw msg( ST, 'User nie zalogowany' );
+
+    int usuniety;
+    begin
+      delete uczestnicy where atr_id = in:id and userid = OE.sess.userid;
+      out:usuniety := sql%rowcount;
+    end;
+
+    if( usuniety > 0 )
+    {
+      recalculate( uczestnicy );
+      return uczestnicy;
+    }
+
+    throw msg( ST, "Brak u¿ytkownika na li¶cie uczestników!" );
   };
 }
 

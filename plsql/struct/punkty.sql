@@ -49,7 +49,8 @@ create table rozklady_jazdy(
   constraint rj_seq_uk unique( atr_id, seq ),
   constraint rozk_jazdy_d_chk check( rodzaj<>'D' or (d_co_ile is not null and d_co_ile between 1 and 1000) ),
   constraint rozk_jazdy_t_chk check( rodzaj<>'T' or (t_co_ile is not null and t_dni is not null and t_co_ile between 1 and 10) ),
-  constraint rozk_jazdy_m_chk check( rodzaj<>'M' or (m_co_ile is not null and m_j is not null and m_w is not null and m_co_ile between 1 and 30 and m_j between 0 and 7 and m_w between -31 and 31) )
+  constraint rozk_jazdy_m_chk check( rodzaj<>'M' or (m_co_ile is not null and m_j is not null and m_w is not null and m_co_ile between 1 and 30 and m_j between 0 and 7 and m_w between -31 and 31) ),
+  constraint rozk_jazdy_start_chk check( trunc(godz_od)=trunc(godz_do) and godz_od<godz_do)
 );
 
 create table terminarze(
@@ -60,3 +61,18 @@ create table terminarze(
   godz_od  date not null,
   godz_do  date not null
 );
+
+create or replace
+trigger rozklady_jazdy_fer_czeki
+before insert on rozklady_jazdy
+for each row
+declare
+begin
+  case :new.rodzaj
+    when 'T' then :new.t_dni := '1';
+    when 'M' then :new.m_w := 1; :new.m_j := 0;
+    else
+      null;
+  end case;
+end;
+/
