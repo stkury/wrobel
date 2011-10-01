@@ -1,0 +1,249 @@
+module "WRO";
+
+presentation POINT_SEARCH basedon PunktyQBE
+{
+  layout = order;
+
+  this in box Stos with presentation
+  {
+    layout = stack;
+
+    this in box with presentation
+    {
+      layout = "tab";
+      orientation = h;
+
+
+      this in box with presentation SIMPLE_POINT_SEARCH
+      {
+	label = "Wyszukaj punkt na mapie";
+      };
+
+      
+      this in box with presentation ADVANCED_POINT_SEARCH
+      {
+	label = "Wyszukiwanie zaawansowane";
+      };
+    };
+  }
+  {
+    stretch = 1;
+  };
+
+  in eval {value="onEnterSearch();";};
+
+  catch( type = push; ) to Stos;
+  catch( type = pop; ) to Stos;
+}
+
+
+presentation SIMPLE_POINT_SEARCH basedon PunktyQBE
+{
+  layout = order;
+  spacing = 5;
+  //margin = 5;
+  
+  this in box with presentation
+  {
+    layout = order;
+    alignment = center;
+
+    kryteria in text
+    {
+      label = "Szukaj:";
+      width = 500;
+
+      on putack throw
+	( type = show; value = "Ex<serach>"; presentation = SIMPLE_POINT_SEARCH_RESULT_MAP; name = SHOW_MAP; );
+    };
+  }
+  {
+    horizontal_stretch = 1;
+  };
+
+  this in box Map with presentation
+  {
+    layout = map;
+
+    as CALLBACK in text CALLBACK 
+    { 
+      mapcallback = Y;
+      type = TXT; label = "login"; value = "";
+      on returnpressed throw
+	( newwindow=Y; windowtype=modal; value="Ex<@root>"; presentation=WWW_BLAD; parameters="Ex<'( message='+&CALLBACK+'; )'>"; label = "ADRES"; );
+    };
+
+
+    * in button
+    {
+      buttonlabel = "Ex<@index@->nazwa>";
+      lat = "52.275264";
+      lon = "20.96130";
+    };
+  }
+  {
+    stretch = 1;
+  };
+
+  catch( name = SHOW_MAP; ) to Map;
+}
+
+
+presentation SIMPLE_POINT_SEARCH_RESULT_MAP basedon PunktyQBESET
+{
+  layout = map;
+
+    as CALLBACK in text CALLBACK 
+    { 
+      mapcallback = Y;
+      type = TXT; label = "login"; value = "";
+      on returnpressed throw
+	( newwindow=Y; windowtype=modal; value="Ex<@root>"; presentation=WWW_BLAD; parameters="Ex<'( message='+&CALLBACK+'; )'>"; label = "ADRES"; );
+    };
+
+
+  * in box with presentation POINT_SEARCH_A_RESULT
+  {
+    //buttonlabel = "Ex<@index@->nazwa>";
+    adres = "Ex<this[@index@]->lokalizacja->kraj + ' ' + this[@index@]->lokalizacja->miasto + ' ' + this[@index@]->lokalizacja->ulica + ' ' + this[@index@]->lokalizacja->numer_domu>";    
+    //lat = "52.275264";
+    //lon = "20.96130";
+  };
+}
+
+
+presentation ADVANCED_POINT_SEARCH basedon PunktyQBE
+{
+  layout = "splitter";
+  orientation = h;
+
+  
+  this in box with presentation POINT_SEARCH_QUERY
+  {
+    stretch = 1;
+  };
+
+
+  this in box Wyniki with presentation Empty
+  {
+    stretch = 2;
+  };
+
+  catch( name = SEARCHED; ) to Wyniki;
+}
+
+presentation POINT_SEARCH_QUERY basedon PunktyQBE
+{
+  layout = order;
+  alignment = top_left;
+
+  lok_nazwa in text { label = "nazwa lokalizacji"; };
+  lok_kraj in text { label = "kraj"; };
+  lok_miasto in text { label = "miasto"; };
+  lok_dzielnica in text { label = "dzielnica"; };
+  lok_ulica in text { label = "ulica"; };
+  lok_nrDomu in text { label = "numer"; };
+
+  atr_nazwa in text { label = "nazwa atrakcji"; };
+  atr_typ in text { label = "typ atrakcji"; };
+
+  serach in button
+  {
+    buttonlabel = "Szukaj";
+
+    on click throw
+      ( name = SEARCHED; presentation = POINT_SEARCH_RESULT; );
+
+  };
+
+}
+
+
+presentation POINT_SEARCH_RESULT basedon PunktyQBESET
+{
+  layout = table;  
+
+  * in box with presentation POINT_SEARCH_A_RESULT;
+  
+}
+
+
+presentation POINT_SEARCH_A_RESULT basedon Punkt
+{
+  layout = order;
+  
+  this in button 
+  { 
+    buttonlabel = "Szczegó³y"; stretch = 1; 
+    
+    on click throw 
+      ( type = push; presentation = POINT_DETAILS_IN_A_STACK; );
+  };
+  nazwa { label = "nazwa"; stretch = 1; };
+  opis  { label = "opis"; stretch = 5; };
+}
+
+
+presentation POINT_DETAILS_IN_A_STACK basedon Punkt
+{
+  layout = order;
+  
+  this in box with presentation POINT_DETAILS
+  {
+    stretch = 1;
+  };
+
+  in button 
+  {
+    buttonlabel = "Wróæ do wyszukiwania";
+    horizontal_stretch = 1;
+
+    on click throw
+      ( type = pop; );
+  };
+}
+
+
+rights for presentation POINT_SEARCH basedon PunktyQBE
+{
+  default{ :DEFAULT = W; };
+}
+
+
+rights for presentation ADVANCED_POINT_SEARCH basedon PunktyQBE
+{
+  default{ :DEFAULT = W; };
+}
+
+
+rights for presentation POINT_SEARCH_QUERY basedon PunktyQBE
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation POINT_SEARCH_RESULT basedon PunktyQBESET
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation POINT_SEARCH_A_RESULT basedon Punkt
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation POINT_DETAILS_IN_A_STACK basedon Punkt
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation SIMPLE_POINT_SEARCH basedon PunktyQBE
+{
+  default{ :DEFAULT = W; };
+}
+
+
+rights for presentation SIMPLE_POINT_SEARCH_RESULT_MAP basedon PunktyQBESET
+{
+  default{ :DEFAULT = W; };
+}
+
