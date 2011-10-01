@@ -16,7 +16,7 @@ presentation POINT_DETAILS basedon Punkt
     label = "lokalizacja";
   };
 
-  this in box with presentation Empty
+  this in box with presentation POINT_ATTRACTIONS
   {
     label = "atrakcje";
   };
@@ -75,7 +75,7 @@ presentation POINT_LOCALIZATION basedon Lokalizacja
   this in box with presentation 
   {
     layout = order;
-    alignment = top_left;
+    alignment = top_center;
 
     in label { value = "Lokalizacja"; };
 
@@ -84,36 +84,39 @@ presentation POINT_LOCALIZATION basedon Lokalizacja
     miasto in text { label = miasto; };
     ulica in text { label = ulica; };
     numer_domu in text { label = numer; };
-    in button 
-    { 
+    this in button 
+    { 	
       buttonlabel = "Wyszukaj na mapie"; 
       on click throw 
-	( value = "Ex<sklej()>";);
+	( presentation = POINT_ON_MAP; );
+    };
 
+    in button 
+    { 	
+      buttonlabel = "Zatwierdź"; 
+      on click throw 
+	( value = "Ex<commit>"; );
     };
   }
   {
     stretch = 1;
   };
 
-  this in box with presentation 
+  this in box Map with presentation POINT_ON_MAP
   {
-    layout = map;
-
-    as LOCALIZATION in text LOCALIZATION 
-    { 
-      type = TXT; label = "login"; value = "Ex<adres_sklejony>"; adres="Ex<adres_sklejony>";
-      on returnpressed throw
-	( newwindow=Y; windowtype=modal; value="Ex<@root>"; presentation=WWW_BLAD; parameters="Ex<'( message='+&LOCALIZATION+'; )'>"; label = "BU"; );
-    };
-  }
-  {
-    stretch = 1;
+    stretch = 2;
   };
-  
 
+  catch( presentation = POINT_ON_MAP; ) to Map;
   
-  
+}
+
+
+presentation POINT_ON_MAP basedon Lokalizacja
+{
+  layout = map;
+
+  as LOCALIZATION in text LOCALIZATION { type = TXT; label = "login"; value = ""; adres="Ex<kraj + ' ' + miasto + ' ' + ulica + ' ' + numer_domu>"; };
 }
 
 
@@ -134,6 +137,11 @@ rights for presentation POINT_IMAGE basedon Punkt
 }
 
 rights for presentation POINT_LOCALIZATION basedon Lokalizacja
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation POINT_ON_MAP basedon Lokalizacja
 {
   default{ :DEFAULT = W; };
 }

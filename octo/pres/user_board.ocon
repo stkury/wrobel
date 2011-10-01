@@ -5,13 +5,6 @@ presentation USER_BOARD basedon User
   layout = "order";
   spacing = 5;
   
-  this in box with presentation
-  {
-    layout = order;
-    
-    in label { value = "Ex<'Zalogowany:&nbsp' + username>"; };
-  };
-  
   this in box UserMainBox with presentation USER_MAIN
   {
     stretch = 1;
@@ -113,6 +106,8 @@ presentation USER_POINTS basedon User
               ( name=TO_TAB_PANEL; value="Ex<@root>"; presentation=NEW_POINT;);
               
     };
+
+    in eval {value="onEnterMoje();";};
   }
   {
     stretch = 1;
@@ -120,12 +115,13 @@ presentation USER_POINTS basedon User
 
   catch( name=TO_TAB_PANEL; ) to TabPanel;
 
+
   this in box TabPanel with presentation Empty
   {
     stretch = 10;
   };
 
-//  in eval {value="onEnterMoje();";};
+ 
 
 }
 

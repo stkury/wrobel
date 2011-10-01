@@ -35,6 +35,13 @@ transactional class Lokalizacja extends TransObject
     out:v_user := r.userid;
     out:nazwa  := r.nazwa;
     out:opis   := r.opis;
+    out:kraj := r.kraj;
+    out:region := r.region;
+    out:miasto := r.miasto;
+    out:dzielnica := r.dzielnica;
+    out:ulica := r.ulica;
+    out:numer_domu := r.numer_domu;
+
     end;
 
     user := ref( 'User', address( v_user ) );
@@ -51,7 +58,7 @@ transactional class Lokalizacja extends TransObject
     miasto = in:miasto,
     dzielnica = in:dzielnica,
     ulica = in:ulica,
-    numer_domu = in:numer_domu,
+    numer_domu = in:numer_domu
     where id = in:id;
   };
 }

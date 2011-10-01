@@ -52,6 +52,15 @@ non-transactional class Root extends Object
     return user;
   };
 
+  method doLogout
+  {
+    user := ref();
+    parameters params;
+    params.add( int() );
+    params.add( txt() );
+    sess->detachUser();
+  };
+
   noupdt method dajId( bool check_user := true ) returns int
   {
     if( check_user )
@@ -119,6 +128,11 @@ non-transactional class Root extends Object
     insert into atrakcje(id,userid,nazwa,pkt_id) values( in:i, OE.sess.userid, in:nazwa, in:pkt_id );
 
     recalculate( user->atrakcje );
+
+    if( !pkt_id.isnull() )
+    {
+      recalculate( ref( 'AtrakcjePunktu', address(pkt_id) ) );
+    }
 
     return ref( "Atrakcja", address( i ) );
   };

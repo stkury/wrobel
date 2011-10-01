@@ -4,24 +4,52 @@ non-transactional class PunktyQBE extends Object
 {
   address { int sess_id; int seq; };
 
-  txt pkt_userid;
-  txt pkt_nazwa;
+  txt kryteria;
 
-  txt lok_userid;
-  txt lok_nazwa;
-  txt lok_opis; 
-  txt lok_kraj; 
-  txt lok_miasto;
-  txt lok_dzielnica;
-  txt lok_ulica;
-  txt lok_nrDomu;
+   noupdt txt  pkt_userid;
+   noupdt txt  pkt_nazwa;
 
-  txt atr_userid;
-  txt atr_nazwa;
-  txt atr_typ;
+   noupdt txt  lok_userid;
+   noupdt txt  lok_nazwa;
+   noupdt txt  lok_opis; 
+   noupdt txt  lok_kraj; 
+   noupdt txt  lok_miasto;
+   noupdt txt  lok_dzielnica;
+   noupdt txt  lok_ulica;
+   noupdt txt  lok_nrDomu;
+
+   noupdt txt  atr_userid;
+   noupdt txt  atr_nazwa;
+   noupdt txt  atr_opis;
+   noupdt txt  atr_typ;
 
   method serach returns PunktyQBESET
   {
+    pkt_userid := '';
+    pkt_nazwa := '';
+   
+    lok_userid := '';
+    lok_nazwa := '';
+    lok_opis := ''; 
+    lok_kraj := ''; 
+    lok_miasto := '';
+    lok_dzielnica := '';
+    lok_ulica := '';
+    lok_nrDomu := '';
+   
+    atr_userid := '';
+    atr_nazwa := '';
+    atr_opis := '';
+    atr_typ := '';
+
+    txt krt := '%' + kryteria.toUpper() + '%';
+
+    pkt_nazwa  := krt;
+    lok_miasto := krt;
+    lok_ulica  := krt;
+    atr_nazwa  := krt;
+    atr_opis   := krt;
+
     ref r := ref( 'PunktyQBESET', this.address );
     recalculate( r );
     return ref( 'PunktyQBESET', this.address );
@@ -47,25 +75,26 @@ non-transactional indexable class PunktyQBESET extends IdxObject
         qry.Pre_Open;
         qry.Pre_Begin_Base( vQbe );
         qry.Pre_Add( 'pkt_userid', 'INT', 'pkt.userid' );
-        qry.Pre_Add( 'pkt_nazwa',  'TXT', 'pkt.nazwa' );
+        qry.Pre_Add( 'pkt_nazwa',  'TXT', 'pkt.nazwa', 'upper' );
         qry.Pre_End_Base;
 
         qry.Pre_Begin_Join( 'lokalizacje lok', vQbe );
         qry.Pre_Add( 'lok_userid',    'INT', 'lok.userid' );
-        qry.Pre_Add( 'lok_nazwa',     'TXT', 'lok.nazwa' );
-        qry.Pre_Add( 'lok_opis',      'TXT', 'lok.opis' );
-        qry.Pre_Add( 'lok_kraj',      'TXT', 'lok.kraj' );
-        qry.Pre_Add( 'lok_miasto',    'TXT', 'lok.miasto' );
-        qry.Pre_Add( 'lok_dzielnica', 'TXT', 'lok.dzielnica' );
-        qry.Pre_Add( 'lok_ulica',     'TXT', 'lok.ulica' );
+        qry.Pre_Add( 'lok_nazwa',     'TXT', 'lok.nazwa', 'upper' );
+        qry.Pre_Add( 'lok_opis',      'TXT', 'lok.opis', 'upper' );
+        qry.Pre_Add( 'lok_kraj',      'TXT', 'lok.kraj', 'upper' );
+        qry.Pre_Add( 'lok_miasto',    'TXT', 'lok.miasto', 'upper' );
+        qry.Pre_Add( 'lok_dzielnica', 'TXT', 'lok.dzielnica', 'upper' );
+        qry.Pre_Add( 'lok_ulica',     'TXT', 'lok.ulica', 'upper' );
         qry.Pre_Add( 'lok_nrDomu',    'TXT', 'lok.numer_domu' );
         qry.Pre_End_Join( 'pkt.LOK_ID', 'lok.ID' );
 
         qry.Pre_Begin_Join( 'atrakcje atr', vQbe );
         qry.Pre_Add( 'atr_userid',    'INT', 'atr.userid' );
-        qry.Pre_Add( 'atr_nazwa',     'TXT', 'atr.nazwa' );
+        qry.Pre_Add( 'atr_nazwa',     'TXT', 'atr.nazwa', 'upper' );
+        qry.Pre_Add( 'atr_opis',      'TXT', 'atr.opis', 'upper' );
         qry.Pre_Add( 'atr_typ',       'INT', 'atr.typ_id' );
-        qry.Pre_End_Join( 'atr.PKT_ID', 'pkt.ID' );
+        qry.Pre_End_Join( 'atr.PKT_ID', 'pkt.ID', pOperator => '(+)=' );
 
         qry.Execute( vt_ID, 'punkty pkt', 'pkt.ID' );
         for i in 1..vt_ID.count loop

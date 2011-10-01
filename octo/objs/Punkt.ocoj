@@ -8,6 +8,8 @@ transactional class Punkt extends TransObject
   noupdt ref user;
   noupdt ref lokalizacja( Lokalizacja );
 
+  noupdt ref atrakcje( AtrakcjePunktu );
+
   int lokId;
   txt nazwa;
   txt opis;
@@ -29,6 +31,10 @@ transactional class Punkt extends TransObject
 
     user := ref( 'User', address( v_user ) );
     lokalizacja := lokId.isnull() ? ref() : ref( 'Lokalizacja', address( lokId ) );
+
+    atrakcje := ref( 'AtrakcjePunktu', this.address );
+
+    recalculate(lokalizacja);
   };
 
   OnSave
@@ -61,6 +67,25 @@ non-transactional indexable class PunktyUsera extends ObiektyUsera
                order by nazwa )
     {
       add( ref( "Punkt", address( int(r.ID) ) ) );
+    }
+  };
+}
+
+
+non-transactional indexable class AtrakcjePunktu extends IdxObject
+{
+  address{ int pkt_id; };
+
+  Calculate
+  {
+    int pkt_id := this.address.pkt_id;
+
+    for r in ( select id
+               from atrakcje
+               where pkt_id = in:pkt_id
+               order by nazwa )
+    {
+      add( ref( "Atrakcja", address( int(r.ID) ) ) );
     }
   };
 }

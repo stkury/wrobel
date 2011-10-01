@@ -39,7 +39,50 @@ presentation LOGIN basedon Root
 
 }
 
+
+presentation USER_INFO basedon User
+{
+  layout = order;  
+    
+  this in box with presentation
+  {
+    layout = "order";
+    alignment = top_center;
+  
+    in label { value = "Ex<'Zalogowany:&nbsp' + username>"; };
+
+    @root->doLogout in button 
+    {
+      buttonlabel = "Wyloguj";
+      
+      on click throw
+	( name = "LOGGED_OUT"; );
+    };  
+  }
+  {
+    stretch = 1;
+  };
+
+  this in box with presentation
+  {
+    layout = tab;
+
+    this in box with presentation Empty
+    {
+      label = "Nowe wiadomo¶ci";
+    };
+  }
+  {
+    stretch = 4;
+  };
+}
+
 rights for presentation LOGIN basedon Root
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation USER_INFO basedon User
 {
   default{ :DEFAULT = W; };
 }

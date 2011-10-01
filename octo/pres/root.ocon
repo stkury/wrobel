@@ -5,17 +5,25 @@ presentation ROOT basedon Root
   layout = "order";
   renderer = "window";
   quitonclose = "Y";  
+  orientation = h;
+  spacing = 10;
   
-  this in box MainBox with presentation SEARCH_OR_LOGIN
+  punktyQBE in box MainBox with presentation POINT_SEARCH
   {	
-    stretch = 1;    
+    stretch = 5;    
   };
 
-  //this in box with presentation SIGNUP;
-  //this in box with presentation USER_BOARD;
+  this in box UserBox with presentation LOGIN
+  {
+    stretch = 1;
+  };
   
-  
-  catch( name=LOGGED_IN; ) to MainBox { event( value = "Ex<user>"; type=show;  presentation=USER_BOARD; ); };
+
+  catch( name=LOGGED_IN; ) to MainBox { event( value = "Ex<user>"; type=show;  presentation=USER_BOARD; ); forward(); };
+  catch( name=LOGGED_IN; ) to UserBox { event( value = "Ex<user>"; type=show;  presentation=USER_INFO; ); forward(); };
+
+  catch( name=LOGGED_OUT; ) to MainBox { event( value = "Ex<punktyQBE>"; type=show;  presentation=POINT_SEARCH; ); forward(); };
+  catch( name=LOGGED_OUT; ) to UserBox { event( value = "Ex<@root>"; type=show;  presentation=LOGIN; ); forward(); };
 
   catch( name=CREATE_USER; ) to MainBox { event( value = "Ex<this>"; type=show; presentation=SIGNUP; ); };
 
@@ -58,6 +66,8 @@ presentation SEARCH_OR_LOGIN basedon Root
   {
     stretch = 1;
   };
+  
+  
 }
 
 
