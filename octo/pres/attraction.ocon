@@ -1,0 +1,334 @@
+module "WRO";
+
+presentation POINT_ATTRACTIONS basedon Punkt
+{
+  layout = splitter;
+
+  this in box TabTree with presentation 
+  {
+    layout = order;
+
+    atrakcje in box with presentation
+    {	
+      layout = tree;
+
+      this in box with presentation 
+      {
+	layout = tree;
+      
+	* in button      
+	{
+	  buttonlabel = "Ex<this[@index@]->nazwa>";
+	  on click throw
+	    (name=TO_TAB_PANEL; presentation=ATTRACTION_DETAILS;);
+	};
+      }
+      {
+	label = "Moje atrakcje:";
+      };
+    }
+    {
+      stretch = 1;
+    };
+
+    this in button 
+    { 
+        buttonlabel = "Dodaj atrakcjê"; horizontal_stretch = 1; 
+        on click throw
+              ( name=TO_TAB_PANEL; presentation=NEW_ATTRACTION;);
+              
+    };
+  }
+  {
+    stretch = 1;
+  };
+
+  catch( name=TO_TAB_PANEL; ) to TabPanel;
+
+  this in box TabPanel with presentation Empty
+  {
+    stretch = 8;
+  };
+
+//  in eval {value="onEnterMoje();";};
+
+}
+
+presentation NEW_ATTRACTION basedon Punkt
+{
+  layout = order;
+  alignment = center;
+
+  in label{value="utwórz nowy atrakcjê";}; 
+
+  as NAME in text NAME { type = TXT; label = "nazwa"; value = ""; };
+
+  in button 
+  {
+    buttonlabel = "ZAPISZ";
+
+    on click throw 
+      ( value = "Ex<utworzAtrakcje(&NAME)>"; type = show; presentation = ATTRACTION_DETAILS; name = TO_TAB_PANEL; );
+  };
+
+}
+
+
+presentation ATTRACTION_DETAILS basedon Atrakcja
+{
+  layout = tab;
+
+  this in box with presentation ATTRACTION_DESC
+  {
+    label = "opis";
+  };
+
+  this in box with presentation ATTRACTION_USERS
+  {
+    label = "uczestnicy";
+  };
+
+  rj in box with presentation ATTRACTION_RJ
+  {
+    label = "rozk³ad jazdy";
+  };
+
+  this in box with presentation ATTRACTION_SCHEDULER
+  {
+    label = "terminarz";
+  };
+}
+
+
+presentation ATTRACTION_DESC basedon Atrakcja
+{
+  layout = order;
+
+  nazwa in text NAME { type = TXT; label = "nazwa"; width = 400; };
+  opis in textarea { label = "opis"; width = 400; };
+  usunAtrakcje in button
+  {
+    buttonlabel = "USUÑ";
+    on click throw
+      (name=TO_TAB_PANEL; presentation=Empty;);
+  };
+
+}
+
+
+presentation ATTRACTION_USERS basedon Atrakcja
+{
+  layout = order;
+  
+  uczestnicy in box with presentation
+  {
+    layout = table;
+
+    * in box with presentation ATTRACTION_USER;
+  };
+
+  dodajMnieDoUczestnikow in button 
+  {
+    buttonlabel = "Dodaj mnie do uczestników";
+
+    on click throw
+      ( type = empty; );
+  };
+}
+
+presentation ATTRACTION_USER basedon Uczestnik
+{
+  layout = order;
+
+  user->username in text { type = TXT; label = "nazwa"; };
+  in button 
+  {
+    buttonlabel = "Szczegó³y"; 
+    
+    on click throw 
+      (	value = "Ex<user>"; type = push; presentation = USER_INFO_IN_STACK; );
+  };
+}
+
+
+presentation ATTRACTION_RJ basedon RozkladJazdy
+{
+  layout = order;
+  spacing = 5;
+  margin = 5;
+
+  in label { value = "Rozk³ady&nbspjazdy:"; };
+
+  this in box with presentation 
+  {
+    layout = order;
+    spacing = 5;
+    margin = 5;
+    flat = N;
+
+    
+
+    * in box with presentation ATTRACTION_RJ_ELEM 
+    {
+      horizontal_stretch = 1;
+    };
+  };
+
+  in label { value = "Nowy&nbsprozk³ad:"; };
+
+  this in box with presentation
+  {
+    layout = order;
+    orientation = h;
+    flat = N;
+    spacing = 5;
+    margin = 5;
+    
+    in label { value = "Rodzaj:"; };
+
+    as TYP in combo TYP
+    {
+      type = TXT;
+      vallist = "((D)(dzienny))((T)(tygodniowy))((M)(miesieczny))";
+      value = D;
+    };
+
+    as OD in text OD
+    {
+      type = TIME;
+      format="dd-MM-yyyy HH:mm:ss";
+      label = "Od godziny:";
+    };
+
+    as DO in text DO
+    {
+      type = TIME;
+      format="dd-MM-yyyy HH:mm:ss";
+      label = "Do godziny:";
+    };
+
+    in button
+    {
+      buttonlabel = "Stwórz";
+
+      on click throw
+	( type = empty; value = "Ex<dodaj(&TYP,&OD, &DO)>"; );
+    };
+  }
+  {
+    horizontal_stretch = 1;
+  };
+
+  generujTerminarz in button 
+  {
+    buttonlabel = "Generuj terminarz";
+    horizontal_stretch = 1;
+
+    on click throw
+      ( type = empty; );
+  };
+
+}
+
+presentation ATTRACTION_RJ_ELEM basedon RozkladJazdyElem
+{
+  layout = order;
+
+  in label { value = "To jest rozk³ad jazdy"; };
+}
+
+
+presentation ATTRACTION_RJ_ELEM basedon RozkladJazdyElemDniowy
+{
+  layout = order;
+  orientation = h;
+
+  in label { value = "Rozk³ad&nbspdzienny"; };
+  in label { value = "Ex<'Od&nbspgodziny:&nbsp' + txt(godzOd)>"; };
+  in label { value = "Ex<'Do&nbspgodziny:&nbsp' + txt(godzDo)>"; };  
+
+  in button 
+  {
+    buttonlabel = "Szczegó³y"; 
+  };
+}
+
+
+presentation ATTRACTION_RJ_ELEM basedon RozkladJazdyElemTygodniowy
+{
+  layout = order;
+  orientation = h;
+
+  in label { value = "Rozk³ad&nbsptygodniowy"; };
+  in label { value = "Ex<'Od&nbspgodziny:&nbsp' + txt(godzOd)>"; };
+  in label { value = "Ex<'Do&nbspgodziny:&nbsp' + txt(godzDo)>"; };  
+
+  in button 
+  {
+    buttonlabel = "Szczegó³y"; 
+  };
+}
+
+
+presentation ATTRACTION_SCHEDULER basedon Atrakcja
+{
+  layout = order;
+}
+
+
+
+rights for presentation ATTRACTION_DESC basedon Atrakcja
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation ATTRACTION_USERS basedon Atrakcja
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation ATTRACTION_USER basedon Uczestnik
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation ATTRACTION_RJ basedon RozkladJazdy
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation ATTRACTION_RJ_ELEM basedon RozkladJazdyElem
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation ATTRACTION_RJ_ELEM basedon RozkladJazdyElemDniowy
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation ATTRACTION_RJ_ELEM basedon RozkladJazdyElemTygodniowy
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation ATTRACTION_SCHEDULER basedon Atrakcja
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation ATTRACTION_DETAILS basedon Atrakcja
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation NEW_ATTRACTION basedon Punkt
+{
+  default{ :DEFAULT = W; };
+}
+
+
+rights for presentation POINT_ATTRACTIONS basedon Punkt
+{
+  default{ :DEFAULT = W; };
+}
