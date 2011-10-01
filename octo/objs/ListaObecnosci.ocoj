@@ -1,10 +1,7 @@
 module "WRO";
 
-transactional class Obecnosc extends TransObject
+transactional class Obecnosc extends WroObject
 {
-  address{ int id; };
-
-  noupdt int id;
   noupdt ref uczestnik;
   noupdt ref terminarz( Terminarz );
 
@@ -12,8 +9,6 @@ transactional class Obecnosc extends TransObject
 
   Calculate
   {
-    id := this.address.id;
-
     int v_ucz, v_term;
     txt v_stat;
     declare r lista_obecnosci %rowtype;

@@ -1,10 +1,7 @@
 module "WRO";
 
-transactional class Punkt extends TransObject
+transactional class Punkt extends WroObject
 {
-  address{ int id; };
-
-  noupdt int id;
   noupdt ref user;
   noupdt ref lokalizacja( Lokalizacja );
 
@@ -17,8 +14,6 @@ transactional class Punkt extends TransObject
 
   Calculate
   {
-    id := this.address.id;
-
     int v_user;
     declare r punkty %rowtype;
     begin

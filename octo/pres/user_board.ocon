@@ -2,14 +2,24 @@ module "WRO";
 
 presentation USER_BOARD basedon User
 {
-  layout = "order";
+  layout = order;
   spacing = 5;
   
-  this in box UserMainBox with presentation USER_MAIN
+  this in box Stos with presentation
+  {
+    layout = stack;
+
+    this in box UserMainBox with presentation USER_MAIN
+    {
+      stretch = 1;
+    };
+  }
   {
     stretch = 1;
   };
 
+  catch( type = push; ) to Stos;
+  catch( type = pop; ) to Stos;
 }
 
 

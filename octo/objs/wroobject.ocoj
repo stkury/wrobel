@@ -1,0 +1,100 @@
+module "WRO";
+
+transactional class WroObject extends TransObject
+{
+  address{ int id; };
+
+  noupdt int id;
+  noupdt ref komentarze( KomentarzeObiektu );
+
+  Calculate
+  {
+    id := this.address.id;
+    komentarze := ref( 'KomentarzeObiektu', address( id, int() ) );
+    inner;
+  };
+
+  method komentuje( txt text, int kom_id := '' ) returns Komentarz
+  {
+    ref root := sess->root;
+    int i := root->dajId();
+
+    if( !kom_id.isnull() )
+    {
+      int e;
+      select max(id) into out:e from komentarze where obj_id = in:id and id = in:kom_id;
+      if( e.isnull() )
+        throw msg( ST, "To nie do tego obiektu" );
+    }
+
+    insert into komentarze(id,userid,obj_id,kom_id,text) values( in:i, OE.sess.userid, in:id, in:kom_id, in:text );
+
+    recalculate( ref( 'KomentarzeObiektu', address( id, kom_id ) ) );
+
+    return ref( 'Komentarz', address( i ) );
+  };
+
+  noupdt method usunKomentarze
+  {
+    declare i number := 1;
+    begin
+      while i > 0 loop
+        delete komentarze k where obj_id = in:id and not exists( select 1 from komentarze where kom_id = k.id );
+        i := sql%rowcount;
+      end loop;
+    end;
+  };
+}
+
+
+non-transactional indexable class KomentarzeObiektu extends IdxObject
+{
+  address{ int obj_id; int kom_id; };
+
+  Calculate
+  {
+    int obj_id := this.address.obj_id;
+    int kom_id := this.address.kom_id;
+    for r in ( select id from komentarze
+               where obj_id = in:obj_id and (in:kom_id is null and kom_id is null or kom_id = in:kom_id)
+               order by czas )
+    {
+      add( ref( 'Komentarz', address(int(r.ID) ) ) );
+    }
+  };
+}
+
+
+non-transactional class Komentarz extends Object
+{
+  address{ int id; };
+
+  noupdt time czas;
+  noupdt txt  text;
+  noupdt ref  user( User );
+  noupdt ref  obj( WroObject );
+  noupdt ref  kom( Komentarz );
+  noupdt ref komentarze( KomentarzeObiektu );
+
+  Calculate
+  {
+    int id := this.address.id;
+
+    int userid, v_obj, v_kom;
+    declare r komentarze %rowtype;
+    begin
+      select * into r from komentarze where id = in:id;
+      out:userid := r.userid;
+      out:v_obj  := r.obj_id;
+      out:v_kom  := r.kom_id;
+      out:czas   := r.czas;
+      out:text   := r.text;
+    end;
+
+    obj := ref( 'WroObject', address( v_obj) );
+    kom := v_kom.isnull() ? ref() : ref( 'Komentarz', address( v_kom ) );
+    user := ref( 'User', address( userid ) );
+
+    komentarze := ref( 'KomentarzeObiektu', address( v_obj, id ) );
+  };
+}

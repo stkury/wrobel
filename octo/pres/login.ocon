@@ -12,13 +12,6 @@ presentation LOGIN basedon Root
     
     in label { value = "Zaloguj siê... "; };
 
-    tmp in text
-    {
-      type = TIME;
-      format="dd-MM-yyyy HH:mm:ss";
-      label = "Do godziny:";
-    };
-
     userLogin in text;
     password in text
     {
@@ -47,7 +40,7 @@ presentation LOGIN basedon Root
 }
 
 
-presentation USER_INFO basedon User
+presentation LOGIN_INFO basedon User
 {
   layout = order;
 
@@ -89,7 +82,7 @@ rights for presentation LOGIN basedon Root
   default{ :DEFAULT = W; };
 }
 
-rights for presentation USER_INFO basedon User
+rights for presentation LOGIN_INFO basedon User
 {
   default{ :DEFAULT = W; };
 }

@@ -48,6 +48,15 @@ transactional class Atrakcja extends TransObject
     where id = in:id;
   };
 
+  method usunAtrakcje()
+  {
+    delete from atrakcje where id = in:id;
+
+    recalculate( user->atrakcje );
+    recalculate( ref( 'AtrakcjePunktu', address(pktId) ) );
+  };
+
+
   method dodajMnieDoUczestnikow returns Uczestnicy
   {
     ref root := sess->root;

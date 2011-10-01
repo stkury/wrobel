@@ -138,6 +138,23 @@ non-transactional class Root extends Object
     return ref( "Atrakcja", address( i ) );
   };
 
+  method usunAtrakcje( txt nazwa := '', int pkt_id := '' ) returns ref
+  {
+    int i := dajId();
+    insert into atrakcje(id,userid,nazwa,pkt_id) values( in:i, OE.sess.userid, in:nazwa, in:pkt_id );
+
+    recalculate( user->atrakcje );
+
+    if( !pkt_id.isnull() )
+    {
+      recalculate( ref( 'AtrakcjePunktu', address(pkt_id) ) );
+    }
+
+    return ref( "Atrakcja", address( i ) );
+  };
+
+
+
   method getPunktyQBE returns PunktyQBE
   {
     return ref( 'PunktyQBE', address( sess->id, dajId() ) );

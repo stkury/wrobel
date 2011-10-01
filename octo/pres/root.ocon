@@ -20,7 +20,7 @@ presentation ROOT basedon Root
   
 
   catch( name=LOGGED_IN; ) to MainBox { event( value = "Ex<user>"; type=show;  presentation=USER_BOARD; ); forward(); };
-  catch( name=LOGGED_IN; ) to UserBox { event( value = "Ex<user>"; type=show;  presentation=USER_INFO; ); forward(); };
+  catch( name=LOGGED_IN; ) to UserBox { event( value = "Ex<user>"; type=show;  presentation=LOGIN_INFO; ); forward(); };
 
   catch( name=LOGGED_OUT; ) to MainBox { event( value = "Ex<punktyQBE>"; type=show;  presentation=POINT_SEARCH; ); forward(); };
   catch( name=LOGGED_OUT; ) to UserBox { event( value = "Ex<@root>"; type=show;  presentation=LOGIN; ); forward(); };
@@ -66,8 +66,6 @@ presentation SEARCH_OR_LOGIN basedon Root
   {
     stretch = 1;
   };
-  
-  
 }
 
 

@@ -1,10 +1,7 @@
 module "WRO";
 
-transactional class Lokalizacja extends TransObject
+transactional class Lokalizacja extends WroObject
 {
-  address{ int id; };
-
-  noupdt int id;
   noupdt ref user;
 
   txt nazwa;
@@ -26,8 +23,6 @@ transactional class Lokalizacja extends TransObject
 
   Calculate
   {
-    id := this.address.id;
-
     int v_user;
     declare r lokalizacje %rowtype;
     begin
