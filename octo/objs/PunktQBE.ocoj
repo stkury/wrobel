@@ -104,3 +104,16 @@ non-transactional indexable class PunktyQBESET extends IdxObject
     >@
   };
 }
+
+rights for PunktyQBE
+{
+  serach
+  {
+    :DEFAULT = W;
+  };
+  kryteria
+  {
+    :DEFAULT = W;
+  };
+}
+

@@ -1,6 +1,6 @@
 module "WRO";
 
-non-transactional indexable class Messages extends IdxObject
+non-transactional indexable class MessagesIn extends IdxObject
 {
   address{ int user_id; txt state; };
 
@@ -8,8 +8,25 @@ non-transactional indexable class Messages extends IdxObject
   {
     int user_id := this.address.user_id;
 
-    for r in ( select *
+    for r in ( select id
                from messages where userid = in:user_id
+               order by sdate desc )
+    {
+      add( ref( "Message", address( int(r.ID) ) ) );
+    }
+  };
+}
+
+non-transactional indexable class MessagesOut extends IdxObject
+{
+  address{ int user_id; };
+
+  Calculate
+  {
+    int user_id := this.address.user_id;
+
+    for r in ( select id
+               from messages where sender = in:user_id
                order by sdate desc )
     {
       add( ref( "Message", address( int(r.ID) ) ) );
@@ -21,15 +38,27 @@ transactional class Message extends TransObject
 {
   address{ int id; };
 
+  noupdt time sentTime;
+  noupdt txt text;
+  noupdt txt state;
+  noupdt ref recp( User );
+  noupdt ref sender( User );
+
   Calculate
   {
     int id := this.address.id;
 
-    
+    int v_recp, v_send;
     declare r messages %rowtype;
     begin
       select * into r from messages where id = in:id;
-    
+      out:text := r.msg;
+      out:state := r.state;
+      out:sentTime := r.sdate;
+      out:v_recp := r.userid;
+      out:v_send := r.sender;
     end;
+    recp := ref( 'User', address( v_recp ) );
+    sender := ref( 'User', address( v_send ) );
   };
 }

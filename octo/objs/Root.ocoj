@@ -93,6 +93,9 @@ non-transactional class Root extends Object
     int i := dajId();
     insert into messages(id,userid,sender,state,msg) values( in:i, in:touser, OE.sess.userid, 'N', in:mess );
 
+    recalculate( ref( 'MessagesIn', address( touser, 'N' ) ) );
+    recalculate( user->messagesOut );
+
     return ref( "Message", address( i ) );
   };
 
@@ -158,5 +161,25 @@ non-transactional class Root extends Object
   method getPunktyQBE returns PunktyQBE
   {
     return ref( 'PunktyQBE', address( sess->id, dajId() ) );
+  };
+}
+
+rights for Root
+{
+  userLogin
+  {
+    :DEFAULT = W;
+  };
+  password
+  {
+    :DEFAULT = W;
+  };
+  doLogin
+  {
+    :DEFAULT = W;
+  };
+  createUser
+  {
+    :DEFAULT = W;
   };
 }

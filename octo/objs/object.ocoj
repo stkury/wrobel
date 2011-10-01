@@ -22,7 +22,8 @@ rights for Object
 {
   default
   {
-    :DEFAULT = W;
+    :DEFAULT = R;
+    Wro:LOGGEDIN = W;
   };
 }
 
@@ -30,7 +31,8 @@ rights for TransObject
 {
   default
   {
-    :DEFAULT = W;
+    :DEFAULT = R;
+    Wro:LOGGEDIN = W;
   };
 }
 
@@ -38,7 +40,8 @@ rights for IdxObject
 {
   default
   {
-    :DEFAULT = W;
+    :DEFAULT = R;
+    Wro:LOGGEDIN = W;
   };
 }
 
@@ -46,6 +49,7 @@ rights for TransIdxObject
 {
   default
   {
-    :DEFAULT = W;
+    :DEFAULT = R;
+    Wro:LOGGEDIN = W;
   };
 }
