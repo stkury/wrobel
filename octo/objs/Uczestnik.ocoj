@@ -1,0 +1,47 @@
+module "WRO";
+
+transactional class Uczestnik extends TransObject
+{
+  address{ int id; };
+
+  noupdt int id;
+  noupdt ref user;
+  noupdt ref atrakcja( Atrakcja );
+
+  Calculate
+  {
+    id := this.address.id;
+
+    int v_user, v_atr;
+    declare r uczestnicy %rowtype;
+    begin
+    select * into r from uczestnicy where id = in:id;
+    out:v_user := r.userid;
+    out:v_atr := r.atr_id;
+    end;
+
+    user := ref( 'User', address( v_user ) );
+    atrakcja := ref( 'Atrakcja', address( v_atr ) );
+  };
+}
+
+
+non-transactional indexable class Uczestnicy of Uczestnik extends IdxObject
+{
+  address{ int atr_id; };
+
+  noupdt ref atrakcja( Atrakcja );
+
+  Calculate
+  {
+    int atr_id := this.address.atr_id;
+
+    atrakcja := ref( 'Atrakcja', address( atr_id ) );
+
+    for r in ( select id from uczestnicy where atr_id = in:atr_id
+               order by userid )
+    {
+      add( ref( 'Uczestnik', address( int(r.ID) ) ) );
+    }
+  };
+}

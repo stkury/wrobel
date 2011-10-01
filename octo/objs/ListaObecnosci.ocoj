@@ -1,0 +1,60 @@
+module "WRO";
+
+transactional class Obecnosc extends TransObject
+{
+  address{ int id; };
+
+  noupdt int id;
+  noupdt ref uczestnik;
+  noupdt ref terminarz( Terminarz );
+
+  enum status;
+
+  Calculate
+  {
+    id := this.address.id;
+
+    int v_ucz, v_term;
+    txt v_stat;
+    declare r lista_obecnosci %rowtype;
+    begin
+      select * into r from lista_obecnosci where id = in:id;
+      out:v_ucz := r.ucz_id;
+      out:v_term := r.term_id;
+      out:v_stat := r.status;
+    end;
+
+    uczestnik := ref( 'Uczestnik', address( v_ucz ) );
+    terminarz := ref( 'Terminarz', address( v_term ) );
+
+    status := enum( v_stat, vallist( ('B','Brak'), ('C','Chcê'), ('N','Nie chcê'), ('Z','Zastanowiê siê') ) );
+  };
+
+  OnSave
+  {
+    txt v_stat := status.val;
+
+    update lista_obecnosci set status = in:v_stat where id = in:id;
+  };
+}
+
+
+non-transactional indexable class ListaObecnosci of Obecnosc extends IdxObject
+{
+  address{ int term_id; };
+ 
+  noupdt ref terminarz( Terminarz );
+
+  Calculate
+  {
+    int term_id := this.address.term_id;
+
+    terminarz := ref( 'Terminarz', address( term_id ) );
+
+    for r in ( select id from lista_obecnosci where term_id = in:term_id
+               order by id )
+    {
+      add( ref( 'Obecnosc', address( int(r.ID) ) ) );
+    }
+  };
+}
