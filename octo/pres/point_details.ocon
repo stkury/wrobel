@@ -1,0 +1,16 @@
+module "WRO";
+
+presentation POINT_DETAILS basedon Punkt
+{
+  layout = "order";
+  alignment = center;
+
+  in label{value="PUNKT";}; 
+
+  nazwa in text NAME { type = TXT; label = "nazwa";};
+}
+
+rights for presentation POINT_DETAILS basedon Punkt
+{
+  default{ :DEFAULT = W; };
+}

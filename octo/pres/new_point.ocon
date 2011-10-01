@@ -1,14 +1,26 @@
 module "WRO";
 
-presentation NEW_POINT basedon User
+presentation NEW_POINT basedon Root
 {
   layout = "order";
   alignment = center;
 
   in label{value="zdefiniuj nowy punkt";}; 
+
+  as NAME in text NAME { type = TXT; label = "nazwa"; value = ""; };
+
+  in button 
+  {
+    buttonlabel = "ZAPISZ";
+
+    on click throw 
+      ( value = "Ex<utworzPunkt(&NAME)>"; type = show; presentation = POINT_DETAILS; name = TO_TAB_PANEL; );
+  };
+
+
 }
 
-rights for presentation NEW_POINT basedon User
+rights for presentation NEW_POINT basedon Root
 {
   default{ :DEFAULT = W; };
 }

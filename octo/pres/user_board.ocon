@@ -69,10 +69,15 @@ presentation USER_SETTINGS basedon User
     flat = N;
     spacing = 5;    
 
-    in text { label = "aktualne has³o"; };
-    in text { label = "nowe has³o"; };
-    in text { label = "powtórz nowe has³o"; };
-    in button { buttonlabel = "Zmieñ has³o"; };
+    as CURRENT_PASSWORD in text CURRENT_PASSWORD { label = "aktualne has³o"; maskvalue=Y;};
+    as NEW_PASSWORD in text NEW_PASSWORD { label = "nowe has³o"; maskvalue=Y;};
+    as NEW_PASSWORD_2 in text NEW_PASSWORD_2 { label = "powtórz nowe has³o"; maskvalue=Y;};
+    in button 
+    { 
+      buttonlabel = "Zmieñ has³o"; 
+      on click throw
+	( newwindow=Y; windowtype=modal; value="Ex<@root>"; presentation=WWW_BLAD; parameters="Ex<'( message=NADAL PRACUJEMY NAD T¡ FUNKCJONALNO¦CI¡; )'>"; label = "WRÓÆ PÓ¬NIEJ"; );
+    };
   }; 
 
 }
@@ -81,8 +86,8 @@ presentation USER_SETTINGS basedon User
 presentation USER_POINTS basedon User
 {
   layout = splitter;
-  
-  this in box with presentation 
+
+  this in box TabPanel with presentation 
   {
     layout = order;
 
@@ -93,17 +98,29 @@ presentation USER_POINTS basedon User
       * in button      
       {
 	buttonlabel = "Ex<this[@index@]->nazwa>";
+	on click throw
+	  (name=TO_TAB_PANEL; presentation=POINT_DETAILS;);
       };
     }
     {
       stretch = 1;
     };
 
-    in button { buttonlabel = "Dodaj punkt"; horizontal_stretch = 1; };
+    this in button 
+    { 
+        buttonlabel = "Dodaj punkt"; horizontal_stretch = 1; 
+        on click throw
+              ( value="Ex<@root>"; destination=@this; presentation=NEW_POINT;);
+              
+    };
+
+    in eval {value="onEnterMoje();";};
   }
   {
     stretch = 1;
   };
+
+  catch( name=TO_TAB_PANEL; ) to TabPanel;
 
   this in box with presentation Empty
   {
