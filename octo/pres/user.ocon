@@ -1,0 +1,42 @@
+module "WRO";
+
+presentation USER_INFO_IN_STACK basedon User
+{
+  layout = order;
+
+  this in box with presentation USER_INFO
+  {
+    stretch = 1;
+  };
+
+  in button 
+  {
+    buttonlabel = "Wróæ";
+    horizontal_stretch = 1;
+
+    on click throw
+      ( type = pop; );
+  };
+}
+
+presentation USER_INFO basedon User
+{
+  layout = order;
+  alignment = top_left;
+
+  username in label;
+
+  in textarea { label = "wiadomo¶æ:"; };
+  in button { buttonlabel = "Wy¶lij wiadomo¶æ"; };
+}
+
+
+rights for presentation USER_INFO_IN_STACK basedon User
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation USER_INFO basedon User
+{
+  default{ :DEFAULT = W; };
+}
