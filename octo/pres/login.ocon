@@ -34,6 +34,23 @@ presentation LOGIN basedon Root
       buttonlabel = "...lub stwórz konto";
       on click throw ( name=CREATE_USER; );
     };
+  }
+  {
+    stretch = 1;
+  };
+
+  this in box with presentation 
+  {
+    layout = order;
+    scrollable = "auto";
+
+    in htmlbrowser
+    {
+      value = "<div style=\"\">Aplikacja s³u¿y do wyszukiwania atrakcji w interesuj±cej nas okolicy.<br><br>U¿ytkownik mo¿e wyszukiwaæ atrakcje lub tworzyæ w³asne.<br><br>Atrakcja posiada listê uczestników oraz rozk³ad jazdy (np grupa osób graj±cych w koszykówkê, danego dnia tygodnia o danej godzinie).<br><br>Docelowo:<br>Co¶ co mo¿na by nazwaæ \"Moja dzielnia/miasto/ulica/okolica\". Co¶ ³±cz±ce ludzi nie po znajomo¶ciach czy szko³ach do których chodzili ale po miejscach w których ¿yj± na co dzieñ. W to ³adnie siê wpisuje funkcjonalno¶æ umawiania siê na kosza czy pi³kê a do tego otwiera inne mo¿liwo¶ci: \"ja gram na gitarze, ja ¶piewam a ja mam perkusjê i gara¿ w którym mo¿emy siê umawiaæ na próby - mieszkamy blisko siebie wiêc mo¿e siê spotkamy\" albo \"jestem biednym studentem mieszkam na tej ulicy umyjê okna, przyniosê zakupy, wyprowadzê psa\" czy \"jestem wariatem budujê w gara¿u statek kosmiczny chêtnie poznam s±siada o podobnych zainteresowaniach\".</div>";
+    };
+  }
+  {
+    stretch = 4;
   };
 
 
