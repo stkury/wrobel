@@ -1,0 +1,87 @@
+module "WRO";
+
+presentation POINT_DETAILS_RO basedon Punkt
+{
+  layout = "tab";
+  orientation = h;
+
+  
+  this in box with presentation POINT_DESC_RO
+  {
+    label = "opis";
+  };
+
+  lokalizacja in box with presentation POINT_LOCALIZATION_RO
+  {
+    label = "lokalizacja";
+  };
+
+  this in box with presentation POINT_ATTRACTIONS_RO
+  {
+    label = "atrakcje";
+  };
+
+}
+
+
+presentation POINT_DESC_RO basedon Punkt
+{
+  layout = "order";
+
+  nazwa in text NAME { type = TXT; label = "nazwa"; width = 400; readonly = Y; };
+  opis in textarea { label = "opis"; width = 400; readonly = Y; };
+  
+  
+}
+
+
+
+presentation POINT_LOCALIZATION_RO basedon Lokalizacja
+{
+  layout = order;
+  orientation = h;
+  flat = N;
+  
+
+  this in box with presentation 
+  {
+    layout = order;
+    alignment = top_center;
+
+    in label { value = "Lokalizacja"; };
+
+    kraj in text { label = kraj; readonly = Y; };
+    region in text { label = region; readonly = Y;  };
+    miasto in text { label = miasto; readonly = Y;  };
+    ulica in text { label = ulica; readonly = Y;  };
+    numer_domu in text { label = numer; readonly = Y; };
+    
+  }
+  {
+    stretch = 1;
+  };
+
+  this in box Map with presentation POINT_ON_MAP
+  {
+    stretch = 2;
+  };
+
+  catch( presentation = POINT_ON_MAP; ) to Map;
+  
+}
+
+
+rights for presentation POINT_DETAILS_RO basedon Punkt
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation POINT_DESC_RO basedon Punkt
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation POINT_LOCALIZATION_RO basedon Lokalizacja
+{
+  default{ :DEFAULT = W; };
+}

@@ -1,0 +1,95 @@
+module "WRO";
+
+presentation POINT_ATTRACTIONS_RO basedon Punkt
+{
+  layout = splitter;  
+
+  this in box TabTree with presentation 
+  {
+    layout = order;
+
+    atrakcje in box with presentation
+    {	
+      layout = tree;
+
+      this in box with presentation 
+      {
+	layout = tree;
+      
+	* in button      
+	{
+	  buttonlabel = "Ex<this[@index@]->nazwa>";
+	  on click throw
+	    (name=TO_TAB_PANEL; presentation=ATTRACTION_DETAILS_RO;);
+	};
+      }
+      {
+	label = "Atrakcje punktu:";
+      };
+    }
+    {
+      stretch = 1;
+    };    
+  }
+  {
+    stretch = 1;
+  };
+
+  catch( name=TO_TAB_PANEL; ) to TabPanel;
+
+  this in box TabPanel with presentation Empty
+  {
+    stretch = 8;
+  };
+
+//  in eval {value="onEnterMoje();";};
+
+}
+
+
+presentation ATTRACTION_DETAILS_RO basedon Atrakcja
+{
+  layout = tab;
+
+  this in box with presentation ATTRACTION_DESC_RO
+  {
+    label = "opis";
+  };
+
+  this in box with presentation ATTRACTION_USERS
+  {
+    label = "uczestnicy";
+  };
+
+  this in box with presentation ATTRACTION_SCHEDULER
+  {
+    label = "terminarz";
+  };
+}
+
+
+presentation ATTRACTION_DESC_RO basedon Atrakcja
+{
+  layout = order;
+  alignment = top_left;
+
+  nazwa in text NAME { type = TXT; label = "nazwa"; readonly = Y; };
+  opis in textarea { label = "opis"; width = 400; readonly = Y; };  
+
+}
+
+
+rights for presentation ATTRACTION_DESC_RO basedon Atrakcja
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation ATTRACTION_DETAILS_RO basedon Atrakcja
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation POINT_ATTRACTIONS_RO basedon Punkt
+{
+  default{ :DEFAULT = W; };
+}
