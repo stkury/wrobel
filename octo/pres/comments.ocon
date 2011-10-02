@@ -1,0 +1,89 @@
+module "WRO";
+
+presentation COMMENTS basedon WroObject
+{
+  layout = order;
+
+  this in box with presentation ADD_COMMENT;
+
+  komentarze in box with presentation OBJECT_COMMENTS
+  {
+    stretch = 1;
+  };
+}
+
+
+presentation ADD_COMMENT basedon WroObject
+{
+  layout = order;
+  orientation = h;
+ 
+  as NEW_COMMENT in text { type = TXT; };
+  in button 
+  {
+    buttonlabel = "dodaj";
+
+    on click throw 
+      ( type = empty; value = "Ex<komentuje(&NEW_COMMENT)>"; );
+  };
+  
+}
+
+
+presentation OBJECT_COMMENTS basedon KomentarzeObiektu
+{
+  layout = detailed_tree;
+
+  @parent in box with presentation ADD_COMMENT;
+
+
+  * in box with presentation A_COMMENT
+  {
+    stretch=1;
+  };
+}
+
+
+presentation A_COMMENT basedon Komentarz
+{
+  layout = detailed_tree;
+  
+  this in box with presentation
+  {
+    layout = order;
+    orientation = h;
+
+    in label { value = "Ex<user->username + ':'>"; };
+    text in label;
+  };
+
+  this in box with presentation
+  {
+    layout=order;
+    in label{value="";};
+  };
+
+
+}
+
+
+
+rights for presentation COMMENTS basedon WroObject
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation ADD_COMMENT basedon WroObject
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation OBJECT_COMMENTS basedon KomentarzeObiektu
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation A_COMMENT basedon Komentarz
+{
+  default{ :DEFAULT = W; };
+}
