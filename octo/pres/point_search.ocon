@@ -188,7 +188,7 @@ presentation POINT_DETAILS_IN_A_STACK basedon Punkt
 {
   layout = order;
   
-  this in box with presentation POINT_DETAILS
+  this in box with presentation POINT_DETAILS_RO
   {
     stretch = 1;
   };

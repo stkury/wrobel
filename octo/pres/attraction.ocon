@@ -103,12 +103,13 @@ presentation ATTRACTION_DETAILS basedon Atrakcja
 presentation ATTRACTION_DESC basedon Atrakcja
 {
   layout = order;
+  alignment = top_left;
 
   nazwa in text NAME { type = TXT; label = "nazwa"; width = 400; };
   opis in textarea { label = "opis"; width = 400; };
   usunAtrakcje in button
   {
-    buttonlabel = "USUÑ";
+    buttonlabel = "Usuñ";
     on click throw
       (name=TO_TAB_PANEL; presentation=Empty;);
   };
@@ -273,6 +274,75 @@ presentation ATTRACTION_RJ_ELEM basedon RozkladJazdyElemTygodniowy
 presentation ATTRACTION_SCHEDULER basedon Atrakcja
 {
   layout = order;
+  spacing = 5;
+
+  terminarze in box with presentation
+  {
+    layout = table;
+
+    * in box with presentation ATTRACTION_SCHEDULER_INSTANCE_IN_TABLE;
+  }
+  {
+    stretch = 1;
+  };
+
+  this in box Chosen with presentation Empty
+  {
+    stretch = 5;
+  };
+
+  catch( name = CHOSEN; ) to Chosen;
+
+}
+
+
+presentation ATTRACTION_SCHEDULER_INSTANCE_IN_TABLE basedon Terminarz
+{
+  layout = order;
+  
+  dzienTyg in text { label = "Dzieñ tygodnia"; };
+  godzOd in text { type = TXT; label = "Godzina od"; };
+  godzDo in text { type = TXT; label = "Godzina do"; };
+  this in button 
+  {
+    buttonlabel = "Szczegó³y";
+
+    on click throw
+      ( name = CHOSEN; presentation = ATTRACTION_SCHEDULER_INSTANCE; );
+  };
+  
+}
+
+
+presentation ATTRACTION_SCHEDULER_INSTANCE basedon Terminarz
+{
+  layout = order;
+
+  in label { value = "Lista obecnosci:"; };
+
+  listaObecnosci in box with presentation
+  {
+    layout = table;
+    vallist = "(((B)(Brak))((C)(Chcê))((N)(Nie chcê))((Z)(Zastanowiê siê)))";
+    
+    * in box with presentation ATTRACTION_SCHEDULER_INSTANCE_POLL;
+  };
+
+  in label { value = "Dyskusja:"; };
+
+  this in box with presentation COMMENTS
+  {
+    stretch = 1;
+  };
+}
+
+
+presentation ATTRACTION_SCHEDULER_INSTANCE_POLL basedon Obecnosc
+{
+  layout = order;
+
+  uczestnik->user->username in text { type = TXT; label = "uczestnik"; };
+  status in text { type = ENUM; label = "deklaracja"; };
 }
 
 
@@ -313,6 +383,21 @@ rights for presentation ATTRACTION_RJ_ELEM basedon RozkladJazdyElemTygodniowy
 }
 
 rights for presentation ATTRACTION_SCHEDULER basedon Atrakcja
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation ATTRACTION_SCHEDULER_INSTANCE basedon Terminarz
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation ATTRACTION_SCHEDULER_INSTANCE_IN_TABLE basedon Terminarz
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation ATTRACTION_SCHEDULER_INSTANCE_POLL basedon Obecnosc
 {
   default{ :DEFAULT = W; };
 }

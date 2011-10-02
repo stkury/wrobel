@@ -33,6 +33,11 @@ presentation USER_MAIN basedon User
     label = "Wyszukiwanie";
   };
 
+  uczestnictwa in box with presentation USER_PARTIPS
+  {
+    label = "Uczestniczê";
+  };
+
   this in box with presentation USER_POINTS
   {
     label = "Moje";
@@ -134,8 +139,44 @@ presentation USER_POINTS basedon User
     stretch = 8;
   };
 
- 
+}
 
+
+presentation USER_PARTIPS basedon UczestnictwaUsera
+{
+  layout = splitter;
+
+  this in box with presentation 
+  {
+    layout = tree;
+    
+    this in box with presentation
+    {
+      layout = tree; 
+
+      * in button 
+      {
+	buttonlabel = "Ex<this[@index@]->atrakcja->nazwa>";
+
+	on click throw
+	  ( name = ATTR; value = "Ex<this[@index@]->atrakcja>"; presentation = ATTRACTION_DETAILS_RO; );
+      };
+    }
+    {
+      label = "Atrakcje:";
+    };
+  }
+  {
+    stretch = 1;
+  };
+
+  this in box AtrakcjaBox with presentation Empty
+  {
+    stretch = 4;
+  };
+  
+  catch( name = ATTR; ) to AtrakcjaBox;
+  
 }
 
 
@@ -157,6 +198,11 @@ rights for presentation USER_SETTINGS basedon User
 
 
 rights for presentation USER_POINTS basedon User
+{
+  default{ :DEFAULT = W; };
+}
+
+rights for presentation USER_PARTIPS basedon UczestnictwaUsera
 {
   default{ :DEFAULT = W; };
 }
