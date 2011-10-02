@@ -36,6 +36,12 @@ transactional class Atrakcja extends TransObject
     user := ref( 'User', address( v_user ) );
     rj   := ref( 'RozkladJazdy', this.address );
     punkt := pktId.isnull() ? ref() : ref( 'Punkt', address( pktId ) );
+
+    roles v_roles := roles( "Wro:user-"+user->username );
+    for a in attrs( this )  a.wroles  := v_roles;
+
+    dodajMnieDoUczestnikow.wroles := roles();
+    usunMnieZUczestnikow.wroles := roles();
   };
 
   OnSave
@@ -69,12 +75,14 @@ transactional class Atrakcja extends TransObject
     insert into uczestnicy(id,atr_id,userid) values( in:i, in:id, OE.sess.userid );
 
     recalculate( uczestnicy );
+    recalculate( root->user->uczestnictwa );
 
     return uczestnicy;
   };
 
   method usunMnieZUczestnikow returns Uczestnicy
   {
+    ref root := sess->root;
     int user_id := sess->user_id;
     if( user_id.isnull() ) throw msg( ST, 'User nie zalogowany' );
 
@@ -87,6 +95,7 @@ transactional class Atrakcja extends TransObject
     if( usuniety > 0 )
     {
       recalculate( uczestnicy );
+      recalculate( root->user->uczestnictwa );
       return uczestnicy;
     }
 

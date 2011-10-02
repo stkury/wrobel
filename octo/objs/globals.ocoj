@@ -22,6 +22,6 @@ rights for globals
 {
   default
   {
-    :DEFAULT = R;
+    :DEFAULT = W;
   };
 }

@@ -22,6 +22,9 @@ transactional indexable class RozkladJazdy of RozkladJazdyElem extends TransIdxO
     {
       add( ref( 'RozkladJazdyElem'+r.podklasa, address( int(r.ID) ) ) );
     }
+
+    roles v_roles := roles( "Wro:user-"+user->username );
+    for a in attrs( this )  a.wroles  := v_roles;
   };
 
   method dodaj( txt rodzaj, time godz_od, time godz_do ) returns RozkladJazdyElem

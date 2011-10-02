@@ -42,16 +42,24 @@ non-transactional indexable class AtrakcjeQBESET extends IdxObject
         qry.Pre_Add( 'atr_typ',       'INT', 'atr.typ_id' );
         qry.Pre_End_Base;
 
-        qry.Pre_Begin_Join( 'atrakcje atr', vQbe );
+        qry.Pre_Begin_Join( 'punkty pkt', vQbe );
         qry.Pre_Add( 'pkt_userid', 'INT', 'pkt.userid' );
         qry.Pre_Add( 'pkt_nazwa',  'TXT', 'pkt.nazwa' );
         qry.Pre_End_Join( 'atr.PKT_ID', 'pkt.ID' );
 
-        qry.Execute( vt_ID, 'atrakcje pkt', 'pkt.ID' );
+        qry.Execute( vt_ID, 'atrakcje atr', 'atr.ID' );
         for i in 1..vt_ID.count loop
           O.setelem( O.orl( 'Atrakcja', vt_ID(i) ) );
         end loop;
       end;
     >@
+  };
+}
+
+rights for AtrakcjeQBE
+{
+  default
+  {
+    :DEFAULT = W;
   };
 }

@@ -45,3 +45,20 @@ non-transactional indexable class Uczestnicy of Uczestnik extends IdxObject
     }
   };
 }
+
+
+non-transactional indexable class UczestnictwaUsera extends ObiektyUsera
+{
+  Calculate
+  {
+    super;
+
+    for r in ( select id
+               from uczestnicy
+               where userid = in:user_id
+               order by atr_id )
+    {
+      add( ref( "Uczestnik", address( int(r.ID) ) ) );
+    }
+  };
+}

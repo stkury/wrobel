@@ -41,7 +41,7 @@ non-transactional class Root extends Object
     select max(id) into out:v_operId from users where username = in:userLogin and haslo = in:password;
 
     if( v_operId.isnull() )
-      throw msg( ST, 'Niepoprawny login lub has³o' );
+      throw msg( ST, 'Niepoprawny login lub has?o' );
 
     parameters params;
     params.add( v_operId );

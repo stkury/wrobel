@@ -7,21 +7,21 @@ non-transactional class PunktyQBE extends Object
   txt kryteria;
 
    noupdt txt  pkt_userid;
-   noupdt txt  pkt_nazwa;
+   txt  pkt_nazwa;
 
-   noupdt txt  lok_userid;
-   noupdt txt  lok_nazwa;
-   noupdt txt  lok_opis; 
-   noupdt txt  lok_kraj; 
-   noupdt txt  lok_miasto;
-   noupdt txt  lok_dzielnica;
-   noupdt txt  lok_ulica;
-   noupdt txt  lok_nrDomu;
+   txt  lok_userid;
+   txt  lok_nazwa;
+   txt  lok_opis; 
+   txt  lok_kraj; 
+   txt  lok_miasto;
+   txt  lok_dzielnica;
+   txt  lok_ulica;
+   txt  lok_nrDomu;
 
-   noupdt txt  atr_userid;
-   noupdt txt  atr_nazwa;
-   noupdt txt  atr_opis;
-   noupdt txt  atr_typ;
+   txt  atr_userid;
+   txt  atr_nazwa;
+   txt  atr_opis;
+   txt  atr_typ;
 
   method serach returns PunktyQBESET
   {
@@ -107,11 +107,7 @@ non-transactional indexable class PunktyQBESET extends IdxObject
 
 rights for PunktyQBE
 {
-  serach
-  {
-    :DEFAULT = W;
-  };
-  kryteria
+  default
   {
     :DEFAULT = W;
   };

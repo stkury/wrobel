@@ -29,6 +29,9 @@ transactional class Punkt extends WroObject
 
     atrakcje := ref( 'AtrakcjePunktu', this.address );
 
+    roles v_roles := roles( "Wro:user-"+user->username );
+    for a in attrs( this )  a.wroles  := v_roles;
+
     recalculate(lokalizacja);
   };
 

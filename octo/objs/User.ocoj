@@ -14,6 +14,7 @@ transactional class User extends TransObject
   noupdt ref punkty( PunktyUsera );
   noupdt ref lokalizacje( LokalizacjeUsera );
   noupdt ref atrakcje( AtrakcjeUsera );
+  noupdt ref uczestnictwa( UczestnictwaUsera );
 
   Calculate
   {
@@ -31,6 +32,14 @@ transactional class User extends TransObject
     punkty      := ref( 'PunktyUsera', address( id, 'N' ) );
     lokalizacje := ref( 'LokalizacjeUsera', address( id, 'N' ) );
     atrakcje    := ref( 'AtrakcjeUsera', address( id, 'N' ) );
+    uczestnictwa := ref( 'UczestnictwaUsera', address( id, 'N' ) );
+
+    roles v_roles := roles( "Wro:user-"+username );
+    for a in attrs( this )  a.wroles  := v_roles;
+
+    messagesInN.rroles := v_roles;
+    messagesOut.rroles := v_roles;
+
     recalculate(punkty);
   };
 

@@ -40,6 +40,9 @@ transactional class Lokalizacja extends WroObject
     end;
 
     user := ref( 'User', address( v_user ) );
+
+    roles v_roles := roles( "Wro:user-"+user->username );
+    for a in attrs( this )  a.wroles  := v_roles;
   };
 
   OnSave
